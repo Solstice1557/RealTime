@@ -36,7 +36,7 @@
 
     <script type="text/javascript">
         window.prices = {{PricesJson}};
-        window.pricesInterval = "{{PricesInterval}}";
+        window.pricesIntervals = {{PricesIntervals}};
         window.tradeHistory = {{HistoryJson}};
     </script>
 </head>
@@ -143,15 +143,30 @@
         am4core.useTheme(am4themes_dataviz);
 
         function GrapthItem(price) {
-            this.date = new Date(price.Date);
-            this.close = price.Close;
-            this.open = price.Open;
-            this.low = price.Low;
-            this.high = price.High;
+            const baseInterval = window.pricesIntervals[0];
+            const basePrice = price[baseInterval];
+            this.date = new Date(basePrice.Date);
+            this.close = basePrice.Close;
+            this.open = basePrice.Open;
+            this.low = basePrice.Low;
+            this.high = basePrice.High;
 
-            Object.keys(price.TechAnalysis).forEach(e => this[e] = price.TechAnalysis[e]);
+            Object.keys(basePrice.TechAnalysis).forEach(
+                e => this[e] = basePrice.TechAnalysis[e]);
 
-            const trade = window.tradeHistory[price.Date];
+            for (let i = 1; i < window.pricesIntervals.length; i++) {
+                const interval = window.pricesIntervals[i];
+                const intervalPrice = price[interval];
+                this["price_" + interval] = intervalPrice.Close;
+                this["close_" + interval] = intervalPrice.Close;
+                this["open_" + interval] = intervalPrice.Open;
+                this["low_" + interval] = intervalPrice.Low;
+                this["high_" + interval] = intervalPrice.High;
+                Object.keys(intervalPrice.TechAnalysis).forEach(
+                    e => this[e + "_" + interval] = intervalPrice.TechAnalysis[e]);
+            }
+
+            const trade = window.tradeHistory[basePrice.Date];
             if (trade) {
                 this.trade = trade.Price;
                 const tradeOperation = trade.Amount < 0 ? "sell" : "buy" ;
@@ -270,11 +285,11 @@
 
             const dateAxis = chart.xAxes.getIndex(0);
             dateAxis.axisRanges.clear();
-            if (window.pricesInterval === "Intraday1Min"
-                || window.pricesInterval === "Intraday5Min"
-                || window.pricesInterval === "Intraday15Min"
-                || window.pricesInterval === "Intraday30Min"
-                || window.pricesInterval === "Intraday1Hour") {
+            if (window.pricesIntervals[0] === "Intraday1Min"
+                || window.pricesIntervals[0] === "Intraday5Min"
+                || window.pricesIntervals[0] === "Intraday15Min"
+                || window.pricesIntervals[0] === "Intraday30Min"
+                || window.pricesIntervals[0] === "Intraday1Hour") {
                 let dates = [];
                 for (let k = 1; k < chart.data.length; k++) {
                     if (chart.data[k].date.getDay() !== chart.data[k - 1].date.getDay()) {
@@ -294,7 +309,7 @@
                 }
             }
 
-            switch (window.pricesInterval) {
+            switch (window.pricesIntervals[0]) {
                 case "Intraday1Min":
                     dateAxis.baseInterval = { timeUnit: "minute", count: 1 };
                     dateAxis.tooltipDateFormat = "yyyy-MM-dd hh:mm a";
@@ -390,18 +405,27 @@
         dateAxis.events.on("datarangechanged", updateDateFormats);
         chart.zoomOutButton.events.on("hit", updateDateFormats);
 
-        const lastPrice = window.prices[window.prices.length - 1];
-        const ids = Object.keys(lastPrice.TechAnalysis);
-        for (let j = 0; j < ids.length; j++) {
-            const id = ids[j];
+        const pushSeries = function (id, isPrice, visible) {
             const series = new am4charts.LineSeries();
             series.id = id;
             series.name = id;
             series.dataFields.dateX = "date";
             series.dataFields.valueY = id;
-            series.tensionX = 0.8;
-            series.tensionY = 0.8;
+            series.tensionX = isPrice ? 1 : 0.8;
+            series.tensionY = isPrice ? 1 : 0.8;
+            series.visible = visible;
             chart.series.push(series);
+        };
+
+        const lastPrice = window.prices[window.prices.length - 1];
+        const lastPriceTechAnalyses = lastPrice[window.pricesIntervals[0]].TechAnalysis;
+        Object.keys(lastPriceTechAnalyses).forEach(e => pushSeries(e, false, true));
+
+        for (let i = 1; i < window.pricesIntervals.length; i++) {
+            const interval = window.pricesIntervals[i];
+            pushSeries("price_" + interval, true, false);
+            Object.keys(lastPriceTechAnalyses).forEach(
+                e => pushSeries(e + "_" + interval, false, false));
         }
 
         chart.data = window.prices.map(p => new GrapthItem(p));

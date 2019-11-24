@@ -8,5 +8,9 @@ namespace RealTime.BL.Sync
         Task SyncIntradayPrices(CancellationToken cancellationToken);
 
         Task SyncDailyPrices(CancellationToken cancellationToken);
+
+        Task SyncIntradayPrices(string[] symbols, CancellationToken cancellationToken);
+
+        Task SyncDailyPrices(string[] symbols, CancellationToken cancellationToken);
     }
 }

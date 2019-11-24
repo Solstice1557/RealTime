@@ -11,10 +11,10 @@
     public static class HtmlConverter
     {
         public static void SavePricesHtml(
-            List<PriceModel> prices,
+            List<Dictionary<PricesTimeInterval, PriceModel>> prices,
             TradingHistory tradingHistory,
             string symbol,
-            string interval,
+            PricesTimeInterval[] intervals,
             string filename)
         {
             var baseFolder = AppDomain.CurrentDomain.BaseDirectory;
@@ -28,7 +28,7 @@
             var amchartsDataviz = File.ReadAllText(Path.Combine(baseFolder, "libs/amcharts4/dataviz.js"));
             var pricesJson = JsonConvert.SerializeObject(prices); 
 
-             var lastPrice = prices.Last().Close.Value;
+            var lastPrice = prices.Last().First().Value.Close.Value;
             var amount = tradingHistory?.GetCurrentAmount() ?? 0;
             var currentCost = (amount * lastPrice).ToString("F02");
             var profit = tradingHistory?.GetCurrentProfit(lastPrice).ToString("F02") ?? "0";
@@ -38,10 +38,12 @@
                 historyJson = JsonConvert.SerializeObject(tradingHistory.Items.ToDictionary(i => i.Date));
             }
 
+            var intervalStrings = intervals.Select(i => i.ToString()).ToArray();
+
             result = result
                 .Replace("{{BootstrapStyles}}", bootstrapCss)
                 .Replace("{{PricesJson}}", pricesJson)
-                .Replace("{{PricesInterval}}", interval)
+                .Replace("{{PricesIntervals}}", JsonConvert.SerializeObject(intervalStrings))
                 .Replace("{{HistoryJson}}", historyJson)
                 .Replace("{{symbol}}", symbol)
                 .Replace("{{CurrentProfit}}", profit)

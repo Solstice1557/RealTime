@@ -13,5 +13,13 @@
             DateTime? fromDate,
             DateTime? toDate,
             params TechAnalysisInfo[] analyses);
+
+        Task<List<Dictionary<PricesTimeInterval, PriceModel>>> GetPrices(
+            string symbol,
+            PricesTimeInterval[] intervals,
+            int size,
+            DateTime? fromDate,
+            DateTime? toDate,
+            params TechAnalysisInfo[] analyses);
     }
 }

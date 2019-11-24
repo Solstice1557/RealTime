@@ -47,7 +47,14 @@
                 });
             serviceCollection.RegisterBusinessLogicServices();
 
-            return serviceCollection.BuildServiceProvider();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
+                dbContext.Database.Migrate();
+            }
+
+            return serviceProvider;
         }
     }
 }

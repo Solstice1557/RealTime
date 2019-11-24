@@ -1,13 +1,11 @@
 ﻿namespace RealTime.Console
 {
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using RealTime.DAL;
     using RealTime.BL.Prices;
     using RealTime.BL.Sync;
     using RealTime.BL.Trading;
@@ -17,14 +15,8 @@
         static async Task Main(string[] args)
         {
             var serviceProvider = Initialization.InitServices();
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
-                dbContext.Database.Migrate();
-            }
-
             var cancellationTokenSource = new CancellationTokenSource();
-            //var syncTask = Task.Run(async () => await Sync(serviceProvider, cancellationTokenSource.Token));
+            var syncTask = Task.Run(async () => await Sync(serviceProvider, cancellationTokenSource.Token));
 
             Console.WriteLine("Sync in progress, press any key to start calculation");
             Console.ReadKey();
@@ -36,26 +28,42 @@
                     await Calculations(scope.ServiceProvider);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
-            
+
             Console.WriteLine("End. Press any key to stop prices syncronization");
             Console.ReadKey();
             cancellationTokenSource.Cancel();
-            //syncTask.Wait(TimeSpan.FromSeconds(20));
+            syncTask.Wait(TimeSpan.FromSeconds(20));
         }
 
         private static async Task Sync(
             IServiceProvider serviceProvider,
             CancellationToken cancellationToken)
         {
-            var syncronizer = serviceProvider.GetService<IPricesSyncronizer>();
-            Console.WriteLine("Sync daily prices");
-            await syncronizer.SyncDailyPrices(cancellationToken);
-            Console.WriteLine("Sync intraday prices");
-            await syncronizer.SyncIntradayPrices(cancellationToken);
+            try
+            {
+                var syncronizer = serviceProvider.GetService<IPricesSyncronizer>();
+                Console.WriteLine("Sync daily prices");
+                await syncronizer.SyncDailyPrices(cancellationToken);
+                // funds to sync can be set up explicitly:
+                // await syncronizer.SyncDailyPrices(new[] { "AAPL", "MSFT" }, cancellationToken);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                Console.WriteLine("Sync intraday prices");
+                await syncronizer.SyncIntradayPrices(cancellationToken);
+                // funds to sync can be set up explicitly:
+                // await syncronizer.SyncIntradayPrices(new[] { "AAPL", "MSFT" }, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+            }
         }
 
         private static async Task Calculations(IServiceProvider serviceProvider)
@@ -63,7 +71,6 @@
             var pricesService = serviceProvider.GetService<IPricesService>();
 
             const string Symbol = "AAPL";
-            const PricesTimeInterval Interval = PricesTimeInterval.Intraday1Min;
 
             var techAnalyses = new[]
                 {
@@ -73,32 +80,56 @@
                     new TechAnalysisInfo(TechAnalysisType.MovingAverage, 40, PriceType.Low)
                 };
 
-            var prices = await pricesService.GetPrices(Symbol, Interval, 100, null, null, techAnalyses);
+            var intervals = new[]
+                {
+                    PricesTimeInterval.Intraday1Min,
+                    PricesTimeInterval.Intraday5Min,
+                    PricesTimeInterval.Intraday15Min
+                };
 
-            Console.WriteLine($"Prices for {Symbol} {Interval}");
+            var prices = await pricesService.GetPrices(
+                Symbol,
+                intervals,
+                100,
+                null,
+                null,
+                techAnalyses);
+
+            Console.WriteLine($"Prices for {Symbol}");
             Console.WriteLine();
 
             foreach (var price in prices)
             {
-                Console.WriteLine(
-                    "{0:g}: 1- {1:F2}, 2- {2:F2}, 3- {3:F2}, 4- {4:F2}{5}",
-                    price.Date,
-                    price.Open,
-                    price.Close,
-                    price.High,
-                    price.Low,
-                    GetTaString(price.TechAnalysis));
+                foreach (var interval in intervals)
+                {
+                    Console.WriteLine(
+                        "{0:g} - {1}:  1- {2:F2}, 2- {3:F2}, 3- {4:F2}, 4- {5:F2}{6}",
+                        price[interval].Date,
+                        GetIntervalString(interval),
+                        price[interval].Open,
+                        price[interval].Close,
+                        price[interval].High,
+                        price[interval].Low,
+                        GetTaString(price[interval].TechAnalysis));
+                }
+
+                Console.WriteLine();
             }
 
             var tradingHistory = new TradingHistory();
-            tradingHistory.Buy(prices[10].Date, prices[10].Close.Value, 100);
-            tradingHistory.Buy(prices[20].Date, prices[20].Close.Value, 50);
-            tradingHistory.Sell(prices[30].Date, prices[30].Close.Value, 140);
+            tradingHistory.Buy(prices[10][intervals[0]].Date, prices[10][intervals[0]].Close.Value, 100);
+            tradingHistory.Buy(prices[20][intervals[0]].Date, prices[20][intervals[0]].Close.Value, 50);
+            tradingHistory.Sell(prices[30][intervals[0]].Date, prices[30][intervals[0]].Close.Value, 140);
 
-            var profit = tradingHistory.GetCurrentProfit(prices.Last().Close.Value);
+            var profit = tradingHistory.GetCurrentProfit(prices.Last()[intervals[0]].Close.Value);
             Console.WriteLine($"Current trading profit: ${profit:F02}");
 
-            HtmlConverter.SavePricesHtml(prices, tradingHistory, Symbol, Interval.ToString(), "test.html");
+            HtmlConverter.SavePricesHtml(
+                prices,
+                tradingHistory,
+                Symbol,
+                intervals,
+                "test.html");
         }
 
         private static string GetTaString(Dictionary<string, decimal?> dict)
@@ -110,6 +141,31 @@
             }
 
             return str;
+        }
+
+        private static string GetIntervalString(PricesTimeInterval interval)
+        {
+            switch (interval)
+            {
+                case PricesTimeInterval.Intraday1Min:
+                    return "1m";
+                case PricesTimeInterval.Intraday5Min:
+                    return "5m";
+                case PricesTimeInterval.Intraday15Min:
+                    return "15m";
+                case PricesTimeInterval.Intraday30Min:
+                    return "30m";
+                case PricesTimeInterval.Intraday1Hour:
+                    return "1h";
+                case PricesTimeInterval.Daily:
+                    return "day";
+                case PricesTimeInterval.Weekly:
+                    return "week";
+                case PricesTimeInterval.Monthly:
+                    return "Month";
+            }
+
+            return "unknown";
         }
     }
 }

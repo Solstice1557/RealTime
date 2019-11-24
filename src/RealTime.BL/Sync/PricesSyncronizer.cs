@@ -30,6 +30,38 @@
             this.logger = logger;
         }
 
+        public async Task SyncIntradayPrices(string[] symbols, CancellationToken cancellationToken)
+        {
+            List<FundToSync> fundsToSync;
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
+                fundsToSync = await dbContext.Funds
+                    .Where(x => symbols.Contains(x.Symbol))
+                    .OrderByDescending(x => x.Volume)
+                    .Select(x => new FundToSync { Id = x.FundId, Symbol = x.Symbol })
+                    .ToListAsync(cancellationToken);
+            }
+
+            await SyncIntradayPrices(fundsToSync, cancellationToken);
+        }
+
+        public async Task SyncDailyPrices(string[] symbols, CancellationToken cancellationToken)
+        {
+            List<FundToSync> fundsToSync;
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
+                fundsToSync = await dbContext.Funds
+                    .Where(x => symbols.Contains(x.Symbol))
+                    .OrderByDescending(x => x.Volume)
+                    .Select(x => new FundToSync { Id = x.FundId, Symbol = x.Symbol })
+                    .ToListAsync(cancellationToken);
+            }
+
+            await this.SyncDailyPrices(fundsToSync, cancellationToken);
+        }
+
         public async Task SyncDailyPrices(CancellationToken cancellationToken)
         {
             List<FundToSync> fundsToSync;
@@ -41,35 +73,7 @@
                     .ToListAsync(cancellationToken);
             }
 
-            foreach (var fund in fundsToSync)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                try
-                {
-                    this.logger.LogInformation($"Syncing daily for {fund.Symbol}");
-                    using (var scope = serviceProvider.CreateScope())
-                    {
-                        var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
-                        await SyncDailyFundPrices(
-                            dbContext,
-                            alphavantageService,
-                            fund.Id,
-                            fund.Symbol,
-                            cancellationToken);
-                    }
-                }
-                catch (TaskCanceledException)
-                {
-                }
-                catch (Exception e)
-                {
-                    this.logger.LogError(e, $"Failed to sync daily prices for {fund.Symbol}");
-                }
-            }
+            await this.SyncDailyPrices(fundsToSync, cancellationToken);
         }
 
         public async Task SyncIntradayPrices(CancellationToken cancellationToken)
@@ -84,6 +88,11 @@
                     .ToListAsync(cancellationToken);
             }
 
+            await SyncIntradayPrices(fundsToSync, cancellationToken);
+        }
+
+        private async Task SyncIntradayPrices(List<FundToSync> fundsToSync, CancellationToken cancellationToken)
+        {
             var firstTime = true;
             var loopTimespan = TimeSpan.FromMinutes(1);
             while (!cancellationToken.IsCancellationRequested)
@@ -131,6 +140,39 @@
             }
         }
 
+        private async Task SyncDailyPrices(List<FundToSync> fundsToSync, CancellationToken cancellationToken)
+        {
+            foreach (var fund in fundsToSync)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                try
+                {
+                    this.logger.LogInformation($"Syncing daily for {fund.Symbol}");
+                    using (var scope = serviceProvider.CreateScope())
+                    {
+                        var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
+                        await SyncDailyFundPrices(
+                            dbContext,
+                            alphavantageService,
+                            fund.Id,
+                            fund.Symbol,
+                            cancellationToken);
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                }
+                catch (Exception e)
+                {
+                    this.logger.LogError(e, $"Failed to sync daily prices for {fund.Symbol}");
+                }
+            }
+        }
+
         private async Task SyncIntradayFundPrices(
             PricesDbContext dbContext,
             IAlphavantageService alphavantageService,
@@ -163,13 +205,18 @@
 
             var minDate = prices.Keys.Min();
             var maxDate = prices.Keys.Max();
-            var exisingPricesTimestamp = dbContext.Prices
+            var exisingPricesTimestamp = await dbContext.Prices
                 .Where(
                     x => x.FundId == id
                          && x.Timestamp >= minDate
                          && x.Timestamp <= maxDate)
                 .Select(x => x.Timestamp)
-                .ToList();
+                .ToListAsync();
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
             var priceBulkCount = 0;
             foreach (var kp in prices)
             {
@@ -193,12 +240,16 @@
 
                 if (priceBulkCount >= 100)
                 {
-                    await dbContext.SaveChangesAsync(cancellationToken);
+                    await dbContext.SaveChangesAsync();
                     priceBulkCount = 0;
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
                 }
             }
 
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await dbContext.SaveChangesAsync();
         }
 
         private async Task SyncDailyFundPrices(
@@ -214,6 +265,11 @@
                 Prices.PricesTimeInterval.Daily,
                 !haveAnyPrices,
                 cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
             if (prices.Count == 0)
             {
                 return;
@@ -221,13 +277,17 @@
 
             var minDate = prices.Keys.Min();
             var maxDate = prices.Keys.Max();
-            var exisingPricesTimestamp = dbContext.DailyPrices
+            var exisingPricesTimestamp = await dbContext.DailyPrices
                 .Where(
                     x => x.FundId == id
                          && x.Timestamp >= minDate
                          && x.Timestamp <= maxDate)
                 .Select(x => x.Timestamp)
-                .ToList();
+                .ToListAsync();
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
             var priceBulkCount = 0;
             foreach (var kp in prices)
             {
@@ -251,12 +311,16 @@
 
                 if (priceBulkCount >= 100)
                 {
-                    await dbContext.SaveChangesAsync(cancellationToken);
+                    await dbContext.SaveChangesAsync();
                     priceBulkCount = 0;
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
                 }
             }
 
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await dbContext.SaveChangesAsync();
         }
 
         private class FundToSync
