@@ -9,14 +9,50 @@ using RealTime.DAL;
 namespace RealTime.DAL.Migrations
 {
     [DbContext(typeof(PricesDbContext))]
-    [Migration("20191117213219_InitialFunds")]
-    partial class InitialFunds
+    [Migration("20191124104121_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0");
+                .HasAnnotation("ProductVersion", "3.0.1");
+
+            modelBuilder.Entity("RealTime.DAL.Entities.DailyPrice", b =>
+                {
+                    b.Property<long>("DailyPriceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal?>("Close")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FundId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal?>("High")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Low")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Open")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Volume")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("DailyPriceId");
+
+                    b.HasIndex("FundId", "Timestamp")
+                        .IsUnique()
+                        .HasName("IX_DailyPrices_FundIdTimestamp");
+
+                    b.ToTable("DailyPrices");
+                });
 
             modelBuilder.Entity("RealTime.DAL.Entities.Fund", b =>
                 {
@@ -3587,25 +3623,25 @@ namespace RealTime.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Close")
+                    b.Property<decimal?>("Close")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("FundId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("High")
+                    b.Property<decimal?>("High")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Low")
+                    b.Property<decimal?>("Low")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Open")
+                    b.Property<decimal?>("Open")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Volume")
+                    b.Property<decimal?>("Volume")
                         .HasColumnType("TEXT");
 
                     b.HasKey("PriceId");
@@ -3615,6 +3651,15 @@ namespace RealTime.DAL.Migrations
                         .HasName("IX_Prices_FundIdTimestamp");
 
                     b.ToTable("Prices");
+                });
+
+            modelBuilder.Entity("RealTime.DAL.Entities.DailyPrice", b =>
+                {
+                    b.HasOne("RealTime.DAL.Entities.Fund", "Fund")
+                        .WithMany()
+                        .HasForeignKey("FundId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RealTime.DAL.Entities.Price", b =>

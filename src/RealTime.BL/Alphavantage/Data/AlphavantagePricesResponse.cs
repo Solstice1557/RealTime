@@ -2,44 +2,44 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
+    using Newtonsoft.Json;
 
     public class AlphavantagePricesResponse
     {
-        [JsonPropertyName("Meta Data")]
+        [JsonProperty("Meta Data")]
         public AlphavantagePricesResponseMetaData MetaData { get; set; }
 
-        [JsonPropertyName("Error Message")]
+        [JsonProperty("Error Message")]
         public string ErrorMessage { get; set; }
 
-        [JsonPropertyName("Time Series (5min)")]
+        [JsonProperty("Time Series (5min)")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeries5Min { get; set; }
 
-        [JsonPropertyName("Time Series (1min)")]
+        [JsonProperty("Time Series (1min)")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeries1Min { get; set; }
 
-        [JsonPropertyName("Time Series (15min)")]
+        [JsonProperty("Time Series (15min)")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeries15Min { get; set; }
 
-        [JsonPropertyName("Time Series (30min)")]
+        [JsonProperty("Time Series (30min)")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeries30Min { get; set; }
 
-        [JsonPropertyName("Time Series (60min)")]
+        [JsonProperty("Time Series (60min)")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeries60Min { get; set; }
 
-        [JsonPropertyName("Time Series (Daily)")]
+        [JsonProperty("Time Series (Daily)")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeriesDaily { get; set; }
 
-        [JsonPropertyName("Weekly Time Series")]
+        [JsonProperty("Weekly Time Series")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeriesWeekly { get; set; }
 
-        [JsonPropertyName("Weekly Adjusted Time Series")]
+        [JsonProperty("Weekly Adjusted Time Series")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeriesWeeklyAdjusted { get; set; }
 
-        [JsonPropertyName("Monthly Time Series")]
+        [JsonProperty("Monthly Time Series")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeriesMonthly { get; set; }
 
-        [JsonPropertyName("Monthly Adjusted Time Series")]
+        [JsonProperty("Monthly Adjusted Time Series")]
         public Dictionary<DateTime, AlphavantagePrice> TimeSeriesMonthlyAdjusted { get; set; }
     }
 }

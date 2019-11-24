@@ -6,5 +6,7 @@ namespace RealTime.BL.Sync
     public interface IPricesSyncronizer
     {
         Task SyncIntradayPrices(CancellationToken cancellationToken);
+
+        Task SyncDailyPrices(CancellationToken cancellationToken);
     }
 }

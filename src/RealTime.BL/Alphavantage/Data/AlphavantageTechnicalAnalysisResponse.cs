@@ -2,20 +2,20 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
+    using Newtonsoft.Json;
 
     public class AlphavantageTechnicalAnalysisResponse
     {
-        [JsonPropertyName("Meta Data")]
+        [JsonProperty("Meta Data")]
         public AlphavantageTechnicalAnalysisMetaData MetaData { get; set; }
 
-        [JsonPropertyName("Error Message")]
+        [JsonProperty("Error Message")]
         public string ErrorMessage { get; set; }
 
-        [JsonPropertyName("Technical Analysis: SMA")]
+        [JsonProperty("Technical Analysis: SMA")]
         public Dictionary<DateTime, AlphavantageTechnicalAnalysis> TechnicalAnalysisSMA { get; set; }
 
-        [JsonPropertyName("Technical Analysis: EMA")]
+        [JsonProperty("Technical Analysis: EMA")]
         public Dictionary<DateTime, AlphavantageTechnicalAnalysis> TechnicalAnalysisEMA { get; set; }
     }
 }

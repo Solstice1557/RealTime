@@ -1,0 +1,427 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SK prices</title>
+
+    <style type="text/css">
+        {{BootstrapStyles}}
+    </style>
+    <style type="text/css">
+        .graph-section {
+            position: relative;
+        }
+
+        .graph-section__graph {
+            width: 100%;
+            height: 500px;
+        }
+
+        .graph-section.graph-section_fullscreen {
+            background: #ffffff;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            padding: 10px;
+        }
+
+            .graph-section.graph-section_fullscreen .graph-section__graph {
+                height: calc(100% - 100px);
+            }
+    </style>
+
+    <script type="text/javascript">
+        window.prices = {{PricesJson}};
+        window.pricesInterval = "{{PricesInterval}}";
+        window.tradeHistory = {{HistoryJson}};
+    </script>
+</head>
+<body>
+    <main role="main" class="container pb-3 mt-3">
+        <section class="graph-section" id="graphSection">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3 id="graphHeader">Prices for {{symbol}}</h3>
+                </div>
+                <div class="col-lg-6 mt-2">
+                    <div class="row" style="white-space: nowrap;">
+                        <div class="col-3">
+                            <strong>Open: </strong>
+                            <span id="currentPriceOpen"></span>
+                        </div>
+                        <div class="col-3">
+                            <strong>Close: </strong>
+                            <span id="currentPriceClose"></span>
+                        </div>
+                        <div class="col-3">
+                            <strong>Low: </strong>
+                            <span id="currentPriceLow"></span>
+                        </div>
+                        <div class="col-3">
+                            <strong>High: </strong>
+                            <span id="currentPriceHigh"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="graphContainer" class="graph-section__graph">
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h3>Trading</h3>
+            </div>
+            <div class="card-body" id="tradingContainer">
+                <span>Current Profit: </span> ${{CurrentProfit}}
+                <span>Current Cost: </span> ${{CurrentCost}}
+                <span>Current Amount: </span> {{CurrentAmount}}
+                <table class="table table-bordered table-striped mt-2">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Price</th>
+                            <th>Sum</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script type="text/javascript">
+    {{JQueryScript}}
+    </script>
+    <script type="text/javascript">
+    {{BootstrapScript}}
+    </script>
+    <script type="text/javascript">
+    {{MomentScript}}
+    </script>
+    <script type="text/javascript">
+    {{AmChartsCoreScript}}
+    </script>
+    <script type="text/javascript">
+    {{AmChartsChartsScript}}
+    </script>
+    <script type="text/javascript">
+    {{AmChartsDatavizScript}}
+    </script>
+
+    <script type="text/javascript">
+    (function () {
+        const debounceTimeouts = { };
+
+        window.skUtils = {
+            debouce:  function (func, time, key) {
+                if (debounceTimeouts[key]) {
+                    clearTimeout(debounceTimeouts[key]);
+                }
+
+                debounceTimeouts[key] = setTimeout(function () {
+                    debounceTimeouts[key] = null;
+                    func();
+                }, time);
+            },
+
+            round: function (value, precision) {
+                var power = Math.pow(10, precision || 0);
+                return Math.round(value * power) / power;
+            }
+        };
+    })();
+
+    (function() {
+        am4core.useTheme(am4themes_dataviz);
+
+        function GrapthItem(price) {
+            this.date = new Date(price.Date);
+            this.close = price.Close;
+            this.open = price.Open;
+            this.low = price.Low;
+            this.high = price.High;
+
+            Object.keys(price.TechAnalysis).forEach(e => this[e] = price.TechAnalysis[e]);
+
+            const trade = window.tradeHistory[price.Date];
+            if (trade) {
+                this.trade = trade.Price;
+                const tradeOperation = trade.Amount < 0 ? "sell" : "buy" ;
+                this.tradeTooltip = `${tradeOperation} ${Math.abs(trade.Amount)}`;
+                this.tradeColor = trade.Amount < 0 ? "red" : "blue";
+            }
+        }
+
+        const chartConfig = {
+            mouseWheelBehavior: "zoomX",
+            yAxes: [
+                {
+                    type: "ValueAxis",
+                    id: "v1"
+                }
+            ],
+            xAxes: [
+                {
+                    type: "DateAxis",
+                    id: "d1",
+                    skipEmptyPeriods: true,
+                    tooltipDateFormat: "yyyy-MM-dd hh:mm a",
+                    "renderer": {
+                        "grid": {
+                            "location": 0
+                        }
+                    }
+                }
+            ],
+
+            series: [
+                {
+                    type: "LineSeries",
+                    id: "price",
+                    name: "price",
+                    dataFields: {
+                        dateX: "date",
+                        valueY: "close"
+                    }
+                },
+
+                {
+                    type: "CandlestickSeries",
+                    id: "candle",
+                    name: "candle",
+                    dataFields: {
+                        dateX: "date",
+                        valueY: "close",
+                        openValueY: "open",
+                        lowValueY: "low",
+                        highValueY: "high",
+                        simplifiedProcessing: true
+                    },
+                    tooltipText: "Open:${openValueY.value}\nLow:${lowValueY.value}\nHigh:${highValueY.value}\nClose:${valueY.value}"
+                },
+
+                {
+                    type: "LineSeries",
+                    id: "trade",
+                    name: "trade",
+                    dataFields: {
+                        dateX: "date",
+                        valueY: "trade"
+                    },
+                    strokeOpacity: 0,
+                    tooltipText: "{tradeTooltip}",
+                    propertyFields: {
+                        fill: "tradeColor",
+                        stroke: "tradeColor"
+                    },
+                    bullets: [
+                        {
+                            type: "CircleBullet",
+                            propertyFields: {
+                                fill: "tradeColor",
+                                stroke: "tradeColor"
+                            }
+                        }
+                    ]
+                }
+            ],
+
+            scrollbarX: {
+                type: "XYChartScrollbar",
+                series: ["price"]
+            },
+
+            cursor: {
+                type: "XYCursor",
+                behavior: "panX"
+            },
+
+            legend: {
+
+            }
+        };
+
+        function updateCurrentPrice(price) {
+            $("#currentPriceOpen").text(price.open);
+            $("#currentPriceClose").text(price.close);
+            $("#currentPriceLow").text(price.low);
+            $("#currentPriceHigh").text(price.high);
+
+            const isGreen = price.close > price.open;
+            $("#currentPriceOpen, #currentPriceClose, #currentPriceLow, #currentPriceHigh")
+                .addClass(isGreen ? "text-success" : "text-danger")
+                .removeClass(isGreen ? "text-danger" : "text-success");
+        }
+
+        let chart = null;
+
+        function updateGuideLines() {
+            if (!chart) {
+                return;
+            }
+
+            const dateAxis = chart.xAxes.getIndex(0);
+            dateAxis.axisRanges.clear();
+            if (window.pricesInterval === "Intraday1Min"
+                || window.pricesInterval === "Intraday5Min"
+                || window.pricesInterval === "Intraday15Min"
+                || window.pricesInterval === "Intraday30Min"
+                || window.pricesInterval === "Intraday1Hour") {
+                let dates = [];
+                for (let k = 1; k < chart.data.length; k++) {
+                    if (chart.data[k].date.getDay() !== chart.data[k - 1].date.getDay()) {
+                        dates.push(chart.data[k].date);
+                    }
+                }
+
+                for (let l = 0; l < dates.length; l++) {
+                    const range = dateAxis.axisRanges.create();
+                    range.date = dates[l];
+                    range.grid.stroke = am4core.color("#FF6478");
+                    range.grid.strokeWidth = 2;
+                    range.grid.strokeOpacity = 0.8;
+                    range.label.inside = true;
+                    range.label.text = moment(dates[l]).format("MMM D");
+                    range.label.fill = range.grid.stroke;
+                }
+            }
+
+            switch (window.pricesInterval) {
+                case "Intraday1Min":
+                    dateAxis.baseInterval = { timeUnit: "minute", count: 1 };
+                    dateAxis.tooltipDateFormat = "yyyy-MM-dd hh:mm a";
+                    break;
+                case "Intraday5Min":
+                    dateAxis.baseInterval = { timeUnit: "minute", count: 5 };
+                    dateAxis.tooltipDateFormat = "yyyy-MM-dd hh:mm a";
+                    break;
+                case "Intraday15Min":
+                    dateAxis.baseInterval = { timeUnit: "minute", count: 15 };
+                    dateAxis.tooltipDateFormat = "yyyy-MM-dd hh:mm a";
+                    break;
+                case "Intraday30Min":
+                    dateAxis.baseInterval = { timeUnit: "minute", count: 30 };
+                    dateAxis.tooltipDateFormat = "yyyy-MM-dd hh:mm a";
+                    break;
+                case "Intraday1Hour":
+                    dateAxis.baseInterval = { timeUnit: "hour", count: 1 };
+                    dateAxis.tooltipDateFormat = "yyyy-MM-dd hh:mm a";
+                    break;
+                case "Daily":
+                    dateAxis.baseInterval = { timeUnit: "day", count: 1 };
+                    dateAxis.tooltipDateFormat = "yyyy-MM-dd";
+                    break;
+                case "Weekly":
+                    dateAxis.baseInterval = { timeUnit: "week", count: 1 };
+                    dateAxis.tooltipDateFormat = "yyyy-MM-dd";
+                    break;
+                default:
+                    dateAxis.baseInterval = { timeUnit: "month", count: 1 };
+                    dateAxis.tooltipDateFormat = "MMM yyyy";
+                    break;
+            }
+        }
+
+        chart = am4core.createFromConfig(chartConfig, "graphContainer", am4charts.XYChart);
+        chart.scrollbarX.parent = chart.bottomAxesContainer;
+        const dateAxis = chart.xAxes.getIndex(0);
+        chart.cursor.xAxis = dateAxis;
+        chart.cursor.events.on("cursorpositionchanged", function (ev) {
+            const date = dateAxis.positionToDate(dateAxis.toAxisPosition(ev.target.xPosition));
+            if (date) {
+                const price = chart.data.filter(p => p.date <= date)
+                    .reduce((p1, p2) => p1 && p1.date > p2.date ? p1 : p2, null);
+                if (price) {
+                    skUtils.debouce(function () {
+                            updateCurrentPrice(price);
+                        },
+                        300,
+                        "updateCurrentPrice");
+                }
+            }
+        });
+
+        const updateDateFormats = function () {
+            if (!dateAxis.baseInterval
+                || dateAxis.baseInterval.timeUnit === "day"
+                || dateAxis.baseInterval.timeUnit === "week"
+                || dateAxis.baseInterval.timeUnit === "month") {
+                return;
+            }
+
+            const start = dateAxis.positionToDate(dateAxis.toAxisPosition(0));
+            const end = dateAxis.positionToDate(dateAxis.toAxisPosition(1));
+            if (!start || !end) {
+                return;
+            }
+
+            skUtils.debouce(
+                function () {
+                    const daysCount = chart.data.filter(p => p.date > start && p.date < end)
+                        .map(p => p.date.getMonth().toString() + "-" + p.date.getDate().toString())
+                        .filter((value, index, self) => self.indexOf(value) === index)
+                        .length;
+                    if (daysCount > 5) {
+                        dateAxis.dateFormats.setKey("hour", "MMM dd");
+                        dateAxis.periodChangeDateFormats.setKey("hour", "MMM dd");
+                        for (let i = 0; i < dateAxis.axisRanges.length; i++) {
+                            dateAxis.axisRanges.getIndex(i).opacity = 0;
+                        }
+                    } else {
+                        dateAxis.dateFormats.setKey("hour", "HH:mm");
+                        dateAxis.periodChangeDateFormats.setKey("hour", "HH:mm");
+                        for (let i = 0; i < dateAxis.axisRanges.length; i++) {
+                            dateAxis.axisRanges.getIndex(i).opacity = 1;
+                        }
+                    }
+                },
+                300,
+                "updateDateFormats");
+        };
+
+        dateAxis.events.on("datarangechanged", updateDateFormats);
+        chart.zoomOutButton.events.on("hit", updateDateFormats);
+
+        const lastPrice = window.prices[window.prices.length - 1];
+        const ids = Object.keys(lastPrice.TechAnalysis);
+        for (let j = 0; j < ids.length; j++) {
+            const id = ids[j];
+            const series = new am4charts.LineSeries();
+            series.id = id;
+            series.name = id;
+            series.dataFields.dateX = "date";
+            series.dataFields.valueY = id;
+            series.tensionX = 0.8;
+            series.tensionY = 0.8;
+            chart.series.push(series);
+        }
+
+        chart.data = window.prices.map(p => new GrapthItem(p));
+
+        updateGuideLines();
+
+        let html = Object.keys(window.tradeHistory).map((e, ind) => {
+            const tradeItem = window.tradeHistory[e];
+            const date = moment(tradeItem.Date).format("lll");
+            return `<tr>
+    <td>${ind + 1}</td>
+    <td>${date}</td>
+    <td>${tradeItem.Amount}</td>
+    <td>${skUtils.round(tradeItem.Price, 2)}</td>
+    <td>${tradeItem.Sum}</td>
+</tr>`;
+        }).reduce((s,x) => s + x, "");
+
+        $("#historyTableBody").html(html);
+    })();
+    </script>
+</body>
+</html>

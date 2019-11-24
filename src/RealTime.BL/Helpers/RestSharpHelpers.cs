@@ -2,10 +2,9 @@
 {
     using System;
     using System.Net;
-    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using Newtonsoft.Json;
     using RestSharp;
 
     public static class RestSharpHelpers
@@ -33,7 +32,7 @@
                 throw new Exception("Empty response");
             }
 
-            var data = JsonSerializer.Deserialize<T>(response.Content);
+            var data = JsonConvert.DeserializeObject<T>(response.Content);
             if (data == null)
             {
                 throw new Exception("Failed to parse response. Content: " + response.Content);

@@ -1,26 +1,26 @@
 ﻿namespace RealTime.BL.Alphavantage
 {
     using System;
-    using System.Text.Json.Serialization;
+    using Newtonsoft.Json;
 
     public class AlphavantagePricesResponseMetaData
     {
-        [JsonPropertyName("1. Information")]
+        [JsonProperty("1. Information")]
         public string Information { get; set; }
 
-        [JsonPropertyName("2. Symbol")]
+        [JsonProperty("2. Symbol")]
         public string Symbol { get; set; }
 
-        [JsonPropertyName("3. Last Refreshed")]
+        [JsonProperty("3. Last Refreshed")]
         public DateTime LastRefreshed { get; set; }
 
-        [JsonPropertyName("4. Interval")]
+        [JsonProperty("4. Interval")]
         public string Interval { get; set; }
 
-        [JsonPropertyName("5. Output Size")]
+        [JsonProperty("5. Output Size")]
         public string OutputSize { get; set; }
 
-        [JsonPropertyName("6. Time Zone")]
+        [JsonProperty("6. Time Zone")]
         public string TimeZone { get; set; }
     }
 }

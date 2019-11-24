@@ -10,6 +10,8 @@
     using RealTime.BL.Common;
     using RealTime.BL.Prices;
 
+    using Microsoft.Extensions.Logging;
+
     public class AlphavantageService : IAlphavantageService
     {
         private const string BaseUrl = "https://www.alphavantage.co/query";
@@ -18,9 +20,12 @@
 
         private readonly string apiKey;
 
-        public AlphavantageService(AppSettings settings)
+        private readonly ILogger logger;
+
+        public AlphavantageService(AppSettings settings, ILogger<AlphavantageService> logger)
         {
             this.apiKey = settings.AlphavantageApiKey;
+            this.logger = logger;
         }
 
         public async Task<Dictionary<DateTime, AlphavantagePrice>> LoadPricesWithRetry(
@@ -34,7 +39,11 @@
             {
                 return await LoadPrices(symbol, pricesInterval, full, cancellationToken);
             }
-            catch
+            catch (TaskCanceledException)
+            {
+                return null;
+            }
+            catch(Exception e)
             {
                 retryCount--;
                 if (retryCount == 0)
@@ -42,6 +51,7 @@
                     throw;
                 }
 
+                this.logger.LogInformation(e, "Error connecting to Alphavantage. Waiting for retry.");
                 await Task.Delay(RetryTimespan, cancellationToken);
                 return await LoadPricesWithRetry(symbol, pricesInterval, full, cancellationToken, retryCount);
             }
@@ -57,7 +67,7 @@
             var request = new RestRequest(Method.GET);
             (string function, string interval) = GetPricesIntervalParameters(pricesInterval);
             request.AddQueryParameter("function", function);
-            request.AddQueryParameter("symbol", symbol);
+            request.AddQueryParameter("symbol", symbol.Replace(".", "-"));
             request.AddQueryParameter("outputsize", full ? "full" : "compact");
             if (!string.IsNullOrEmpty(interval))
             {

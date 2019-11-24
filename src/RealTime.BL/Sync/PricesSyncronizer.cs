@@ -50,7 +50,7 @@
 
                 try
                 {
-                    this.logger.LogDebug($"Syncing daily for {fund.Symbol}");
+                    this.logger.LogInformation($"Syncing daily for {fund.Symbol}");
                     using (var scope = serviceProvider.CreateScope())
                     {
                         var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
@@ -99,7 +99,7 @@
 
                     try
                     {
-                        this.logger.LogDebug($"Syncing intraday for {fund.Symbol}");
+                        this.logger.LogInformation($"Syncing intraday for {fund.Symbol}");
                         using (var scope = serviceProvider.CreateScope())
                         {
                             var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
@@ -144,6 +144,11 @@
                 Prices.PricesTimeInterval.Intraday1Min,
                 firstTime,
                 cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
             if (prices.Count == 0)
             {
                 return;

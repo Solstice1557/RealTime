@@ -14,7 +14,7 @@ namespace RealTime.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0");
+                .HasAnnotation("ProductVersion", "3.0.1");
 
             modelBuilder.Entity("RealTime.DAL.Entities.DailyPrice", b =>
                 {
