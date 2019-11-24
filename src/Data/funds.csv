@@ -1,0 +1,505 @@
+"AAPL";"Apple Inc";1163246
+"MSFT";"Microsoft Corp";1112966
+"GOOG";"Alphabet Inc";895214
+"GOOGL";"Alphabet Inc";894193
+"AMZN";"Amazon.com Inc";876906
+"FB";"Facebook Inc";540092
+"BRK.B";"Berkshire Hathaway Inc";539621
+"JPM";"JPMorgan Chase & Co";407366
+"V";"Visa Inc";40014
+"JNJ";"Johnson & Johnson";346591
+"WMT";"Walmart Inc";337986
+"XOM";"Exxon Mobil Corp";298335
+"BAC";"Bank of America Corp";298277
+"PG";"Procter & Gamble Co";297761
+"T";"AT&T Inc";287378
+"MA";"Mastercard Inc";278728
+"INTC";"Intel Corp";253822
+"HD";"The Home Depot Inc";253571
+"VZ";"Verizon Communications Inc";246327
+"DIS";"The Walt Disney Co";24275
+"UNH";"UnitedHealth Group Inc";240046
+"CVX";"Chevron Corp";228455
+"WFC";"Wells Fargo & Co";228343
+"KO";"Coca-Cola Co";22215
+"MRK";"Merck & Co Inc";211698
+"BA";"Boeing Co";207152
+"CMCSA";"Comcast Corp";205535
+"CSCO";"Cisco Systems Inc";204637
+"PFE";"Pfizer Inc";204043
+"ORCL";"Oracle Corp";185166
+"PEP";"PepsiCo Inc";184455
+"C";"Citigroup Inc";165005
+"ABT";"Abbott Laboratories";147825
+"MCD";"McDonald's Corp";145015
+"MDT";"Medtronic PLC";144444
+"CRM";"Salesforce.com Inc";141468
+"NKE";"Nike Inc";140479
+"ADBE";"Adobe Inc";140445
+"COST";"Costco Wholesale Corp";132196
+"AMGN";"Amgen Inc";130779
+"PM";"Philip Morris International Inc";130195
+"HON";"Honeywell International Inc";12933
+"NFLX";"Netflix Inc";129117
+"UTX";"United Technologies Corp";128022
+"NVDA";"NVIDIA Corp";126818
+"ABBV";"AbbVie Inc";12638
+"AVGO";"Broadcom Inc";123904
+"UNP";"Union Pacific Corp";122554
+"ACN";"Accenture PLC";120739
+"PYPL";"PayPal Holdings Inc";120366
+"IBM";"International Business Machines Corp";119853
+"TMO";"Thermo Fisher Scientific Inc";117654
+"TXN";"Texas Instruments Inc";110387
+"LIN";"Linde PLC";109145
+"NEE";"NextEra Energy Inc";108737
+"LLY";"Eli Lilly and Co";108139
+"LMT";"Lockheed Martin Corp";107598
+"UPS";"United Parcel Service Inc";10546
+"QCOM";"Qualcomm Inc";105346
+"CHTR";"Charter Communications Inc";10159
+"GE";"General Electric Co";99387
+"AXP";"American Express Co";98888
+"MMM";"3M Co";97816
+"SBUX";"Starbucks Corp";97492
+"DHR";"Danaher Corp";96457
+"BMY";"Bristol-Myers Squibb Co";94661
+"CVS";"CVS Health Corp";9324
+"USB";"U.S. Bancorp";92248
+"AMT";"American Tower Corp";92043
+"LOW";"Lowe's Companies Inc";88208
+"MO";"Altria Group Inc";86774
+"CAT";"Caterpillar Inc";8176
+"GILD";"Gilead Sciences Inc";81551
+"FIS";"Fidelity National Information Services Inc";81176
+"MS";"Morgan Stanley";79408
+"BKNG";"Booking Holdings Inc";7931
+"CELG";"Celgene Corp";77954
+"GS";"Goldman Sachs Group Inc";77555
+"BLK";"BlackRock Inc";75457
+"FISV";"Fiserv Inc";74836
+"MDLZ";"Mondelez International Inc";74568
+"SYK";"Stryker Corp";74031
+"CME";"CME Group Inc";71224
+"ANTM";"Anthem Inc";70739
+"TJX";"TJX Companies Inc";70722
+"ADP";"Automatic Data Processing Inc";70603
+"CI";"Cigna Corp";69834
+"CB";"Chubb Ltd";6851
+"TMUS";"T-Mobile US Inc";68009
+"EL";"The Estee Lauder Companies Inc";67349
+"INTU";"Intuit Inc";6707
+"PNC";"PNC Financial Services Group Inc";6668
+"D";"Dominion Energy Inc";6551
+"BDX";"Becton, Dickinson and Co";6542
+"COP";"ConocoPhillips";64694
+"DUK";"Duke Energy Corp";63883
+"SO";"Southern Co";63511
+"ISRG";"Intuitive Surgical Inc";62896
+"SPGI";"S&P Global Inc";62282
+"RTN";"Raytheon Co";60126
+"AGN";"Allergan PLC";59503
+"NOC";"Northrop Grumman Corp";58988
+"CSX";"CSX Corp";5739
+"CL";"Colgate-Palmolive Co";56942
+"DE";"Deere & Co";5662
+"TGT";"Target Corp";56391
+"ITW";"Illinois Tool Works Inc";56368
+"BSX";"Boston Scientific Corp";55934
+"ZTS";"Zoetis Inc";55646
+"SCHW";"Charles Schwab Corp";55356
+"WBA";"Walgreens Boots Alliance Inc";5531
+"PLD";"Prologis Inc";5524
+"GM";"General Motors Co";55222
+"CCI";"Crown Castle International Corp";54573
+"ECL";"Ecolab Inc";54368
+"SHW";"Sherwin-Williams Co";53503
+"DD";"DuPont de Nemours Inc";53434
+"GD";"General Dynamics Corp";53339
+"BIIB";"Biogen Inc";52981
+"PSX";"Phillips 66";52687
+"AMAT";"Applied Materials Inc";52229
+"MMC";"Marsh & McLennan Companies Inc";52096
+"VRTX";"Vertex Pharmaceuticals Inc";51915
+"APD";"Air Products & Chemicals Inc";51708
+"GPN";"Global Payments Inc";51519
+"MU";"Micron Technology Inc";51411
+"ICE";"Intercontinental Exchange Inc";50717
+"NSC";"Norfolk Southern Corp";50483
+"SLB";"Schlumberger Ltd";50308
+"EW";"Edwards Lifesciences Corp";48895
+"LVS";"Las Vegas Sands Corp";4847
+"AIG";"American International Group Inc";48299
+"SPG";"Simon Property Group Inc";47721
+"WM";"Waste Management Inc";4681
+"HCA";"HCA Healthcare Inc";45846
+"EQIX";"Equinix Inc";45748
+"AON";"Aon PLC";45499
+"EMR";"Emerson Electric Co";45369
+"BK";"Bank of New York Mellon Corp";45224
+"MET";"MetLife Inc";45209
+"COF";"Capital One Financial Corp";4517
+"KMI";"Kinder Morgan Inc";45163
+"KMB";"Kimberly-Clark Corp";44969
+"AEP";"American Electric Power Co Inc";43902
+"ILMN";"Illumina Inc";43409
+"LHX";"L3Harris Technologies Inc";431
+"MAR";"Marriott International Inc";43093
+"PGR";"Progressive Corp";43075
+"EOG";"EOG Resources Inc";43009
+"EXC";"Exelon Corp";42801
+"MPC";"Marathon Petroleum Corp";42679
+"FDX";"FedEx Corp";42262
+"HUM";"Humana Inc";41847
+"ADI";"Analog Devices Inc";41576
+"BBT";"BB&T Corp";41564
+"VLO";"Valero Energy Corp";41369
+"DOW";"Dow Inc";41293
+"MCO";"Moody's Corporation";41113
+"SYY";"Sysco Corp";40853
+"ROST";"Ross Stores Inc";40502
+"AMD";"Advanced Micro Devices Inc";4038
+"ATVI";"Activision Blizzard Inc";40325
+"BAX";"Baxter International Inc";40323
+"DG";"Dollar General Corp";40241
+"SRE";"Sempra Energy";40119
+"KHC";"The Kraft Heinz Co";39883
+"AFL";"Aflac Inc";39644
+"LRCX";"Lam Research Corp";39391
+"ETN";"Eaton Corp PLC";37962
+"REGN";"Regeneron Pharmaceuticals Inc";37846
+"DAL";"Delta Air Lines Inc";37064
+"PRU";"Prudential Financial Inc";37052
+"PSA";"Public Storage";37011
+"F";"Ford Motor Co";36001
+"ALL";"Allstate Corp";35418
+"STZ";"Constellation Brands Inc";35345
+"ROP";"Roper Technologies Inc";35169
+"OXY";"Occidental Petroleum Corp";34785
+"VFC";"VF Corp";34525
+"TRV";"The Travelers Companies Inc";3446
+"CTSH";"Cognizant Technology Solutions Corp";34228
+"WELL";"Welltower Inc";3375
+"ADSK";"Autodesk Inc";33574
+"ORLY";"O'Reilly Automotive Inc";33236
+"JCI";"Johnson Controls International PLC";32845
+"LYB";"LyondellBasell Industries NV";32357
+"CCL";"Carnival Corp";31822
+"GIS";"General Mills Inc";31609
+"XEL";"Xcel Energy Inc";31499
+"TEL";"TE Connectivity Ltd";31371
+"MNST";"Monster Beverage Corp";31348
+"EQR";"Equity Residential";31275
+"LUV";"Southwest Airlines Co";31251
+"IR";"Ingersoll-Rand PLC";31135
+"STI";"SunTrust Banks Inc";31109
+"PEG";"Public Service Enterprise Group Inc";30748
+"BF.B";"Brown-Forman Corp";30638
+"PPG";"PPG Industries Inc";30506
+"APH";"Amphenol Corp";30259
+"NEM";"Newmont Goldcorp Corp";3012
+"TSN";"Tyson Foods Inc";30112
+"YUM";"Yum Brands Inc";29907
+"HSY";"The Hershey Co";29572
+"PAYX";"Paychex Inc";29566
+"AVB";"AvalonBay Communities Inc";2938
+"ZBH";"Zimmer Biomet Holdings Inc";29377
+"HPQ";"HP Inc";29223
+"ED";"Consolidated Edison Inc";29104
+"TDG";"TransDigm Group Inc";28934
+"OKE";"ONEOK Inc";28849
+"EBAY";"eBay Inc";2866
+"CMI";"Cummins Inc";28541
+"EA";"Electronic Arts Inc";28178
+"TROW";"T. Rowe Price Group Inc";28088
+"AZO";"AutoZone Inc";28053
+"INFO";"IHS Markit Ltd";27696
+"HLT";"Hilton Worldwide Holdings Inc";2766
+"MSI";"Motorola Solutions Inc";27658
+"PCAR";"PACCAR Inc";27614
+"WEC";"WEC Energy Group Inc";27534
+"KLAC";"KLA Corp";27533
+"RSG";"Republic Services Inc";27433
+"IQV";"IQVIA Holdings Inc";2719
+"CTAS";"Cintas Corp";26943
+"WMB";"Williams Companies Inc";26749
+"STT";"State Street Corporation";26537
+"DFS";"Discover Financial Services";26343
+"SBAC";"SBA Communications Corp";25796
+"DLTR";"Dollar Tree Inc";25756
+"ES";"Eversource Energy";25683
+"PH";"Parker Hannifin Corp";25527
+"DLR";"Digital Realty Trust Inc";25406
+"FLT";"Fleetcor Technologies Inc";25239
+"MCK";"McKesson Corp";25201
+"FE";"FirstEnergy Corp";24951
+"O";"Realty Income Corp";24945
+"APTV";"Aptiv PLC";24494
+"PPL";"PPL Corp";24308
+"ADM";"Archer-Daniels Midland Co";24249
+"FTV";"Fortive Corp";24198
+"ALXN";"Alexion Pharmaceuticals Inc";24102
+"SWK";"Stanley Black & Decker Inc";23976
+"WLTW";"Willis Towers Watson PLC";23974
+"XLNX";"Xilinx Inc";23952
+"RCL";"Royal Caribbean Cruises Ltd";23837
+"EIX";"Edison International";23832
+"SYF";"Synchrony Financial";23786
+"A";"Agilent Technologies Inc";23723
+"UAL";"United Airlines Holdings Inc";23614
+"DTE";"DTE Energy Co";23189
+"GLW";"Corning Inc";23034
+"HPE";"Hewlett Packard Enterprise Co";22769
+"BKR";"Baker Hughes Co";22764
+"ETR";"Entergy Corp";22743
+"TWTR";"Twitter Inc";22692
+"MCHP";"Microchip Technology Inc";22614
+"NTRS";"Northern Trust Corp";22573
+"VRSK";"Verisk Analytics Inc";22479
+"CNC";"Centene Corp";2234
+"HRL";"Hormel Foods Corp";22213
+"HES";"Hess Corp";22176
+"HIG";"The Hartford Financial Services Group Inc";22108
+"PXD";"Pioneer Natural Resources Co";22092
+"VTR";"Ventas Inc";22073
+"AME";"AMETEK Inc";22027
+"WY";"Weyerhaeuser Co";21989
+"MTB";"M&T Bank Corp";21946
+"VRSN";"VeriSign Inc";21773
+"FOXA";"Fox Corp";21699
+"IDXX";"IDEXX Laboratories Inc";21641
+"K";"Kellogg Co";21639
+"FITB";"Fifth Third Bancorp";21629
+"BXP";"Boston Properties Inc";21395
+"MKC";"McCormick & Co Inc";21295
+"KR";"The Kroger Co";21291
+"FOX";"Fox Corp";21227
+"BLL";"Ball Corp";21129
+"FAST";"Fastenal Co";21111
+"ROK";"Rockwell Automation Inc";21094
+"AWK";"American Water Works Co Inc";20948
+"CERN";"Cerner Corp";20802
+"ESS";"Essex Property Trust Inc";20755
+"AMP";"Ameriprise Financial Inc";20737
+"MSCI";"MSCI Inc";20704
+"RMD";"ResMed Inc";20662
+"SNPS";"Synopsys Inc";20651
+"CMG";"Chipotle Mexican Grill Inc";20617
+"ALGN";"Align Technology Inc";20383
+"BBY";"Best Buy Co Inc";20105
+"CTVA";"Corteva Inc";19959
+"KEYS";"Keysight Technologies Inc";19789
+"ANSS";"Ansys Inc";19424
+"DHI";"D.R. Horton Inc";19371
+"CDW";"CDW Corp";19235
+"CPRT";"Copart Inc";19234
+"KEY";"KeyCorp";1893
+"CDNS";"Cadence Design Systems Inc";18917
+"AEE";"Ameren Corp";18775
+"LEN";"Lennar Corp";18688
+"HAL";"Halliburton Co";18583
+"CBRE";"CBRE Group Inc";18438
+"CLX";"Clorox Co";18422
+"FRC";"First Republic Bank";1841
+"GRMN";"Garmin Ltd";18398
+"INCY";"Incyte Corp";18222
+"VMC";"Vulcan Materials Co";18061
+"IP";"International Paper Co";18053
+"ARE";"Alexandria Real Estate Equities Inc";17856
+"CINF";"Cincinnati Financial Corp";17814
+"DISH";"DISH Network Corp";17774
+"GWW";"W.W. Grainger Inc";17599
+"ABC";"AmerisourceBergen Corp";17491
+"OMC";"Omnicom Group Inc";17259
+"MTD";"Mettler-Toledo International Inc";17229
+"SWKS";"Skyworks Solutions Inc";17208
+"AJG";"Arthur J. Gallagher & Co";17027
+"CMS";"CMS Energy Corp";16919
+"NUE";"Nucor Corp";16798
+"NDAQ";"Nasdaq Inc";16761
+"CFG";"Citizens Financial Group Inc";16654
+"PEAK";"Healthpeak Properties Inc";16595
+"CHD";"Church & Dwight Co Inc";16584
+"CTL";"CenturyLink Inc";16527
+"FTNT";"Fortinet Inc";16439
+"EFX";"Equifax Inc";16334
+"DISCA";"Discovery Inc";16221
+"MGM";"MGM Resorts International";16211
+"RF";"Regions Financial Corp";16157
+"FCX";"Freeport-McMoRan Inc";16105
+"LH";"Laboratory Corp of America Holdings";16071
+"MXIM";"Maxim Integrated Products Inc";15971
+"MLM";"Martin Marietta Materials Inc";15947
+"DOV";"Dover Corp";15916
+"AMCR";"Amcor PLC";15844
+"CAH";"Cardinal Health Inc";15648
+"WDC";"Western Digital Corp";15472
+"KMX";"CarMax Inc";15438
+"GPC";"Genuine Parts Co";15408
+"PFG";"Principal Financial Group Inc";1538
+"HBAN";"Huntington Bancshares Inc";15367
+"STX";"Seagate Technology PLC";15339
+"CE";"Celanese Corp";15302
+"TIF";"Tiffany & Co";15227
+"KSU";"Kansas City Southern";15184
+"MAA";"Mid-America Apartment Communities Inc";15169
+"NLOK";"NortonLifeLock Inc";15163
+"TFX";"Teleflex Inc";15131
+"WAB";"Westinghouse Air Brake Technologies Corp";15075
+"WCG";"WellCare Health Plans Inc";15069
+"DISCK";"Discovery Inc";15045
+"L";"Loews Corp";15002
+"ANET";"Arista Networks Inc";14608
+"CBS";"CBS Corp";14598
+"CXO";"Concho Resources Inc";1454
+"CTXS";"Citrix Systems Inc";14503
+"COO";"The Cooper Companies Inc";14475
+"EXPE";"Expedia Group Inc";14339
+"EVRG";"Evergy Inc";14312
+"IT";"Gartner Inc";14302
+"ULTA";"Ulta Beauty Inc";14256
+"NTAP";"NetApp Inc";14231
+"IFF";"International Flavors & Fragrances Inc";14013
+"DRI";"Darden Restaurants Inc";13993
+"BEN";"Franklin Resources Inc";13925
+"CNP";"CenterPoint Energy Inc";13917
+"UDR";"UDR Inc";13899
+"CPB";"Campbell Soup Co";13893
+"AKAM";"Akamai Technologies Inc";13815
+"EXR";"Extra Space Storage Inc";13685
+"MKTX";"MarketAxess Holdings Inc";13648
+"XYL";"Xylem Inc";13646
+"DGX";"Quest Diagnostics Inc";13551
+"BR";"Broadridge Financial Solutions Inc";13533
+"TTWO";"Take-Two Interactive Software Inc";13523
+"WAT";"Waters Corp";13484
+"AAL";"American Airlines Group Inc";134
+"CAG";"Conagra Brands Inc";13373
+"NVR";"NVR Inc";13251
+"MAS";"Masco Corp";13202
+"WYNN";"Wynn Resorts Ltd";13066
+"EXPD";"Expeditors International of Washington Inc";13036
+"JEC";"Jacobs Engineering Group Inc";12854
+"FMC";"FMC Corp";12773
+"DRE";"Duke Realty Corp";12773
+"ARNC";"Arconic Inc";12758
+"ATO";"Atmos Energy Corp";12726
+"CBOE";"Cboe Global Markets Inc";12699
+"JBHT";"JB Hunt Transport Services Inc";12606
+"ROL";"Rollins Inc";12544
+"VNO";"Vornado Realty Trust";12525
+"LNT";"Alliant Energy Corp";12406
+"LDOS";"Leidos Holdings Inc";12386
+"XRAY";"Dentsply Sirona Inc";12386
+"UHS";"Universal Health Services Inc";12338
+"FANG";"Diamondback Energy Inc";12304
+"RJF";"Raymond James Financial Inc";12275
+"IEX";"IDEX Corp";12218
+"SIVB";"SVB Financial Group";12204
+"HST";"Host Hotels & Resorts Inc";12177
+"HOLX";"Hologic Inc";12167
+"AAP";"Advance Auto Parts Inc";12046
+"HAS";"Hasbro Inc";12043
+"LNC";"Lincoln National Corp";11955
+"SJM";"JM Smucker Co";11897
+"AES";"The AES Corp";11883
+"QRVO";"Qorvo Inc";11861
+"URI";"United Rentals Inc";11746
+"LW";"Lamb Weston Holdings Inc";11722
+"TAP";"Molson Coors Brewing Co";11532
+"WU";"The Western Union Co";11445
+"JKHY";"Jack Henry & Associates Inc";11414
+"VAR";"Varian Medical Systems Inc";11407
+"TSCO";"Tractor Supply Co";11405
+"EMN";"Eastman Chemical Co";11229
+"AVY";"Avery Dennison Corp";11136
+"NCLH";"Norwegian Cruise Line Holdings Ltd";11037
+"RE";"Everest Re Group Ltd";10873
+"REG";"Regency Centers Corp";10859
+"LKQ";"LKQ Corp";10787
+"PKG";"Packaging Corp of America";10783
+"GL";"Globe Life Inc";10755
+"ALLE";"Allegion PLC";10744
+"MHK";"Mohawk Industries Inc";10728
+"TXT";"Textron Inc";10545
+"PHM";"PulteGroup Inc";10495
+"CHRW";"C.H. Robinson Worldwide Inc";10404
+"HII";"Huntington Ingalls Industries Inc";10302
+"CMA";"Comerica Inc";10281
+"NBL";"Noble Energy Inc";10206
+"WRK";"WestRock Co";1018
+"CF";"CF Industries Holdings Inc";10073
+"ABMD";"Abiomed Inc";9943
+"FRT";"Federal Realty Investment Trust";9919
+"HSIC";"Henry Schein Inc";9871
+"WHR";"Whirlpool Corp";9842
+"ETFC";"E*TRADE Financial Corp";9768
+"NI";"NiSource Inc";9756
+"MRO";"Marathon Oil Corp";9711
+"PKI";"PerkinElmer Inc";9709
+"NRG";"NRG Energy Inc";9688
+"PNW";"Pinnacle West Capital Corp";9578
+"BWA";"BorgWarner Inc";9542
+"IRM";"Iron Mountain Inc";9447
+"COTY";"Coty Inc";9397
+"VIAB";"Viacom Inc";9378
+"FTI";"TechnipFMC PLC";9196
+"SNA";"Snap-on Inc";9192
+"KSS";"Kohl's Corp";9081
+"APA";"Apache Corp";9002
+"DVA";"DaVita Inc";8984
+"FFIV";"F5 Networks Inc";891
+"NOV";"National Oilwell Varco Inc";8893
+"MYL";"Mylan NV";8872
+"ALK";"Alaska Air Group Inc";8851
+"JNPR";"Juniper Networks Inc";8832
+"KIM";"Kimco Realty Corp";8816
+"HFC";"HollyFrontier Corp";8732
+"IPG";"The Interpublic Group of Companies Inc";8689
+"ZION";"Zions Bancorp NA";8666
+"DVN";"Devon Energy Corp";8657
+"FBHS";"Fortune Brands Home & Security Inc";8556
+"RL";"Ralph Lauren Corp";8509
+"AOS";"A.O. Smith Corp";8447
+"XRX";"Xerox Holdings Corp";8288
+"NWL";"Newell Brands Inc";8235
+"IVZ";"Invesco Ltd";8015
+"UAA";"Under Armour Inc";7932
+"AIV";"Apartment Investment & Management Co";7926
+"MOS";"The Mosaic Co";7916
+"NWS";"News Corp";7845
+"AIZ";"Assurant Inc";782
+"NWSA";"News Corp";7715
+"DXC";"DXC Technology Co";7667
+"IPGP";"IPG Photonics Corp";7578
+"TPR";"Tapestry Inc";7361
+"NLSN";"Nielsen Holdings PLC";734
+"PBCT";"People's United Financial Inc";7334
+"COG";"Cabot Oil & Gas Corp";7256
+"PNR";"Pentair PLC";7254
+"ALB";"Albemarle Corp";7167
+"PVH";"PVH Corp";7165
+"UA";"Under Armour Inc";7161
+"FLIR";"FLIR Systems Inc";7154
+"LEG";"Leggett & Platt Inc";7143
+"SLG";"SL Green Realty Corp";6874
+"RHI";"Robert Half International Inc";6818
+"PRGO";"Perrigo Co PLC";6677
+"GPS";"Gap Inc";6425
+"FLS";"Flowserve Corp";6404
+"UNM";"Unum Group";6155
+"SEE";"Sealed Air Corp";6102
+"PWR";"Quanta Services Inc";6078
+"HOG";"Harley-Davidson Inc";5932
+"JWN";"Nordstrom Inc";5802
+"HBI";"Hanesbrands Inc";5801
+"CPRI";"Capri Holdings Ltd";551
+"M";"Macy's Inc";4973
+"ADS";"Alliance Data Systems Corp";4961
+"HRB";"H&R Block Inc";4937
+"LB";"L Brands Inc";4836
+"XEC";"Cimarex Energy Co";4637
+"HP";"Helmerich & Payne Inc";4501
+"TRIP";"TripAdvisor Inc";4432
+"AMG";"Affiliated Managers Group Inc";4291
+"MAC";"Macerich Co";393
