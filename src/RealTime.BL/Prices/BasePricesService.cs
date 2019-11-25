@@ -24,7 +24,7 @@
         {
             var sizeShift = analyses != null && analyses.Length > 0 ? analyses.Max(x => x.TimePeriod) : 0;
             var prices = await this.LoadPrices(symbol, interval, size + sizeShift, fromDate, toDate);
-
+            prices = prices.OrderBy(p => p.Date).ToList();
             this.LoadTechAnalyses(analyses, prices);
 
             if (prices.Count > size)
@@ -32,6 +32,7 @@
                 prices = prices.Skip(prices.Count - size).ToList();
             }
 
+            prices.Reverse();
             return prices;
         }
 
@@ -52,7 +53,7 @@
                 var adjustedSize = GetAdjustedSize(size, interval, lowestInterval);
 
                 var prices = await this.LoadPrices(symbol, interval, adjustedSize + sizeShift, fromDate, toDate);
-
+                prices = prices.OrderBy(p => p.Date).ToList();
                 this.LoadTechAnalyses(analyses, prices);
 
                 if (prices.Count > size)
@@ -60,6 +61,7 @@
                     prices = prices.Skip(prices.Count - size).ToList();
                 }
 
+                prices.Reverse();
                 intervalPrices.Add(interval, prices);
             }
 

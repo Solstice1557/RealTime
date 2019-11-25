@@ -43,7 +43,7 @@
                     Low = kp.Value.Low.ToDecimal(),
                     Volume = kp.Value.Volume.ToDecimal()
                 })
-                .OrderBy(p => p.Date)
+                .OrderByDescending(p => p.Date)
                 .ToList();
             return prices;
         }
