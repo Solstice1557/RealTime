@@ -85,6 +85,8 @@
             {
                 case PricesTimeInterval.Intraday1Min:
                     return data.TimeSeries1Min;
+                case PricesTimeInterval.Intraday3Min:
+                    throw new ArgumentOutOfRangeException(nameof(pricesInterval));
                 case PricesTimeInterval.Intraday5Min:
                     return data.TimeSeries5Min;
                 case PricesTimeInterval.Intraday15Min:
@@ -110,6 +112,8 @@
             {
                 case PricesTimeInterval.Intraday1Min:
                     return ("TIME_SERIES_INTRADAY", "1min");
+                case PricesTimeInterval.Intraday3Min:
+                    throw new ArgumentOutOfRangeException(nameof(interval));
                 case PricesTimeInterval.Intraday5Min:
                     return ("TIME_SERIES_INTRADAY", "5min");
                 case PricesTimeInterval.Intraday15Min:

@@ -104,6 +104,9 @@
             var groupByMinutes = 1;
             switch (interval)
             {
+                case PricesTimeInterval.Intraday3Min:
+                    groupByMinutes = 3;
+                    break;
                 case PricesTimeInterval.Intraday5Min:
                     groupByMinutes = 5;
                     break;

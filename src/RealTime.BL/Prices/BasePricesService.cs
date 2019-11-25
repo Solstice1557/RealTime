@@ -193,6 +193,8 @@
             {
                 case PricesTimeInterval.Intraday1Min:
                     return 1;
+                case PricesTimeInterval.Intraday3Min:
+                    return 3;
                 case PricesTimeInterval.Intraday5Min:
                     return 5;
                 case PricesTimeInterval.Intraday15Min:
