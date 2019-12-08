@@ -12,7 +12,7 @@
             services.AddSingleton<IAlphavantageService, AlphavantageService>();
             services.AddSingleton<ITechAnalysisService, TechAnalysisService>();
             services.AddScoped<IPricesService, DBPricesService>();
-            services.AddSingleton<IPricesSyncronizer, PricesSyncronizer>();
+            services.AddSingleton<IPricesSyncronizer, AlpacaPricesSyncronizer>();
         }
     }
 }

@@ -27,7 +27,7 @@
             DateTime? fromDate,
             DateTime? toDate)
         {
-            var loadedPrices = await this.alphavantageService.LoadPrices(
+            var loadedPrices = await this.alphavantageService.LoadPricesWithRetry(
                 symbol,
                 interval,
                 size > 100,

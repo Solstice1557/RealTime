@@ -1,5 +1,6 @@
 ﻿namespace RealTime.DAL.Entities
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     
     public class Fund
@@ -14,5 +15,7 @@
         public string Name { get; set; }
 
         public int Volume { get; set; }
+
+        public virtual ICollection<DailyPrice> DailyPrices { get; set; }
     }
 }

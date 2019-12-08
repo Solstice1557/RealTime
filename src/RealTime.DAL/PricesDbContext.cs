@@ -43,7 +43,7 @@
 
             modelBuilder.Entity<DailyPrice>()
                 .HasOne(p => p.Fund)
-                .WithMany()
+                .WithMany(f => f.DailyPrices)
                 .HasForeignKey(p => p.FundId)
                 .OnDelete(DeleteBehavior.Restrict);
 

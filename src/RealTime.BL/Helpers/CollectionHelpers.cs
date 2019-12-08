@@ -1,10 +1,10 @@
-﻿namespace RealTime.BL.Utils
+﻿namespace RealTime.BL
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    public static class CollectionExtensions
+    public static class CollectionHelpers
     {
         public static IEnumerable<IEnumerable<T>> Chunks<T>(this IEnumerable<T> collection, int chunkSize)
         {

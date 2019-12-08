@@ -14,16 +14,16 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class PricesSyncronizer : IPricesSyncronizer
+    public class AlphavantagePricesSyncronizer : IPricesSyncronizer
     {
         private readonly IAlphavantageService alphavantageService;
         private readonly IServiceProvider serviceProvider;
         private readonly ILogger logger;
 
-        public PricesSyncronizer(
+        public AlphavantagePricesSyncronizer(
             IAlphavantageService alphavantageService,
             IServiceProvider serviceProvider,
-            ILogger<PricesSyncronizer> logger)
+            ILogger<AlphavantagePricesSyncronizer> logger)
         {
             this.alphavantageService = alphavantageService;
             this.serviceProvider = serviceProvider;
