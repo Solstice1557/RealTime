@@ -15,11 +15,12 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class AlpacaPricesSyncronizer : IPricesSyncronizer
+    public class AlpacaPricesSyncronizer : IPricesSyncronizer, IDisposable
     {
         private readonly IServiceProvider serviceProvider;
         private readonly ILogger logger;
         private readonly IOptions<AppSettings> settings;
+        private readonly Lazy<AlpacaDataClient> alpacaClientLazy;
 
         public AlpacaPricesSyncronizer(
             IServiceProvider serviceProvider,
@@ -29,6 +30,7 @@
             this.serviceProvider = serviceProvider;
             this.logger = logger;
             this.settings = settings;
+            alpacaClientLazy = new Lazy<AlpacaDataClient>(CreateAlpacaClient);
         }
 
         public async Task SyncIntradayPrices(string[] symbols, CancellationToken cancellationToken)
@@ -70,7 +72,7 @@
             {
                 var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
                 fundsToSync = await dbContext.Funds.OrderByDescending(x => x.Volume)
-                    .Select(x => new FundToSync 
+                    .Select(x => new FundToSync
                     {
                         Id = x.FundId,
                         Symbol = x.Symbol,
@@ -97,10 +99,18 @@
             await SyncIntradayPrices(fundsToSync, cancellationToken);
         }
 
+        public void Dispose()
+        {
+            if (alpacaClientLazy.IsValueCreated)
+            {
+                alpacaClientLazy.Value.Dispose();
+            }
+        }
+
         private async Task SyncIntradayPrices(List<FundToSync> fundsToSync, CancellationToken cancellationToken)
         {
             var firstTime = true;
-            var loopTimespan = TimeSpan.FromMinutes(1);
+            var loopTimespan = TimeSpan.FromSeconds(30);
             while (!cancellationToken.IsCancellationRequested)
             {
                 var sw = new Stopwatch();
@@ -110,18 +120,12 @@
                 foreach (var fundsChunk in fundsChunks)
                 {
                     var symbols = fundsChunk.Select(x => x.Symbol).ToArray();
-                    IReadOnlyDictionary<string, IEnumerable<IAgg>> barsResponse;
-                    using (var client = new RestClient(
-                        this.settings.Value.AlpacaApiKey,
-                        this.settings.Value.AlpacaApiSecret,
-                        "https://paper-api.alpaca.markets"))
+                    var request = new BarSetRequest(symbols, TimeFrame.Minute)
                     {
-                        barsResponse = await client.GetBarSetAsync(
-                            symbols,
-                            TimeFrame.Minute,
-                            limit: firstTime ? 1000 : 20,
-                            cancellationToken: cancellationToken);
-                    }
+                        Limit = firstTime ? 1000 : 20,
+                    };
+
+                    var barsResponse = await alpacaClientLazy.Value.GetBarSetAsync(request, cancellationToken);
 
                     foreach (var fund in fundsChunk)
                     {
@@ -148,12 +152,14 @@
                             this.logger.LogInformation($"Syncing intraday for {fund.Symbol}");
                             using (var scope = serviceProvider.CreateScope())
                             {
-                                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
-                                await SyncIntradayFundPrices(
-                                    dbContext,
-                                    fund.Id,
-                                    bars,
-                                    cancellationToken);
+                                await using (var dbContext = scope.ServiceProvider.GetService<PricesDbContext>())
+                                {
+                                    await SyncIntradayFundPrices(
+                                        dbContext,
+                                        fund.Id,
+                                        bars,
+                                        cancellationToken);
+                                }
                             }
                         }
                         catch (TaskCanceledException)
@@ -185,19 +191,12 @@
             foreach (var fundsChunk in fundsChunks)
             {
                 var symbols = fundsChunk.Select(x => x.Symbol).ToArray();
-                IReadOnlyDictionary<string, IEnumerable<IAgg>> barsResponse;
-                using (var client = new RestClient(
-                    this.settings.Value.AlpacaApiKey,
-                    this.settings.Value.AlpacaApiSecret,
-                    "https://paper-api.alpaca.markets"))
+                var request = new BarSetRequest(symbols, TimeFrame.Day)
                 {
-                    barsResponse = await client.GetBarSetAsync(
-                        symbols,
-                        TimeFrame.Day,
-                        limit: fundsChunk.Any(x => !x.AnyDailyPrice) ? 200 : 20,
-                        cancellationToken: cancellationToken);
-                }
+                    Limit = fundsChunk.Any(x => !x.AnyDailyPrice) ? 200 : 20
+                };
 
+                var barsResponse = await alpacaClientLazy.Value.GetBarSetAsync(request, cancellationToken);
                 foreach (var fund in fundsChunk)
                 {
                     if (cancellationToken.IsCancellationRequested)
@@ -361,6 +360,21 @@
             }
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private AlpacaDataClient CreateAlpacaClient()
+        {
+            if (string.IsNullOrEmpty(this.settings.Value.AlpacaApiKey) || string.IsNullOrEmpty(this.settings.Value.AlpacaApiSecret))
+            {
+                throw new InvalidOperationException("Alpaca settings is not present");
+            }
+
+            var configuration = new AlpacaDataClientConfiguration
+            {
+                SecurityId = new SecretKey(this.settings.Value.AlpacaApiKey, this.settings.Value.AlpacaApiSecret)
+            };
+
+            return new AlpacaDataClient(configuration);
         }
 
         private class FundToSync

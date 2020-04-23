@@ -15,16 +15,19 @@
     {
         public static ServiceProvider InitServices()
         {
-            var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+            var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development";
+            var basePath = Directory.GetCurrentDirectory();
+            var projectPath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(basePath)));
 
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true)
-                .AddJsonFile("realtimesettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile(Path.Combine(projectPath, "realtimesettings.json"), optional: true, reloadOnChange: true)
+                .AddJsonFile(Path.Combine(projectPath, $"realtimesettings.{environmentName}.json"), optional: false, reloadOnChange: true)
+                .AddJsonFile("realtimesettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"realtimesettings.{environmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
-
             IConfigurationRoot configuration = builder.Build();
 
             var serviceCollection = new ServiceCollection();

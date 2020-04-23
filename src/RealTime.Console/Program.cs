@@ -2,7 +2,6 @@
 {
     using Microsoft.Extensions.DependencyInjection;
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -10,7 +9,7 @@
     using RealTime.BL.Sync;
     using RealTime.BL.Trading;
 
-    class Program
+    public static class Program
     {
         static async Task Main(string[] args)
         {
@@ -102,15 +101,7 @@
             {
                 foreach (var interval in intervals)
                 {
-                    Console.WriteLine(
-                        "{0:g} - {1}:  1- {2:F2}, 2- {3:F2}, 3- {4:F2}, 4- {5:F2}{6}",
-                        price[interval].Date,
-                        GetIntervalString(interval),
-                        price[interval].Open,
-                        price[interval].Close,
-                        price[interval].High,
-                        price[interval].Low,
-                        GetTaString(price[interval].TechAnalysis));
+                    Console.WriteLine(price[interval].ToDebugString(interval));
                 }
 
                 Console.WriteLine();
@@ -130,42 +121,6 @@
                 Symbol,
                 intervals,
                 "test.html");
-        }
-
-        private static string GetTaString(Dictionary<string, decimal?> dict)
-        {
-            var str = string.Empty;
-            foreach (var kp in dict)
-            {
-                str += $", {kp.Key}: {kp.Value:F02}";
-            }
-
-            return str;
-        }
-
-        private static string GetIntervalString(PricesTimeInterval interval)
-        {
-            switch (interval)
-            {
-                case PricesTimeInterval.Intraday1Min:
-                    return "1m";
-                case PricesTimeInterval.Intraday5Min:
-                    return "5m";
-                case PricesTimeInterval.Intraday15Min:
-                    return "15m";
-                case PricesTimeInterval.Intraday30Min:
-                    return "30m";
-                case PricesTimeInterval.Intraday1Hour:
-                    return "1h";
-                case PricesTimeInterval.Daily:
-                    return "day";
-                case PricesTimeInterval.Weekly:
-                    return "week";
-                case PricesTimeInterval.Monthly:
-                    return "Month";
-            }
-
-            return "unknown";
         }
     }
 }

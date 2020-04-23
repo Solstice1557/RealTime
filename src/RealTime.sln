@@ -17,9 +17,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{8215DB98-20FB-400F-997E-559C7C66A4BF}"
 	ProjectSection(SolutionItems) = preProject
 		.dockerignore = .dockerignore
+		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTime.Console", "RealTime.Console\RealTime.Console.csproj", "{F8FC58F8-5FB5-4F05-80CC-0F043223A7D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealTime.Console", "RealTime.Console\RealTime.Console.csproj", "{F8FC58F8-5FB5-4F05-80CC-0F043223A7D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
