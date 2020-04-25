@@ -21,7 +21,7 @@
             RestRequest request,
             CancellationToken cancellationToken)
         {
-            var response = await client.ExecuteTaskAsync(request, cancellationToken);
+            var response = await client.ExecuteAsync(request, cancellationToken);
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 throw new Exception(response.Content);

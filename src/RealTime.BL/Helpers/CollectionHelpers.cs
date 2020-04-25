@@ -6,7 +6,7 @@
 
     public static class CollectionHelpers
     {
-        public static IEnumerable<IEnumerable<T>> Chunks<T>(this IEnumerable<T> collection, int chunkSize)
+        public static IReadOnlyCollection<IReadOnlyCollection<T>> Chunks<T>(this IEnumerable<T> collection, int chunkSize)
         {
             if (chunkSize <= 0)
             {
@@ -15,7 +15,8 @@
 
             return collection.Select((v, i) => new { v, groupIndex = i / chunkSize })
                              .GroupBy(x => x.groupIndex)
-                             .Select(g => g.Select(x => x.v));
+                             .Select(g => g.Select(x => x.v).ToArray())
+                             .ToArray();
         }
     }
 }

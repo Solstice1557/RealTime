@@ -42,27 +42,21 @@
             IServiceProvider serviceProvider,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                var syncronizer = serviceProvider.GetService<IPricesSyncronizer>();
-                Console.WriteLine("Sync daily prices");
-                await syncronizer.SyncDailyPrices(cancellationToken);
-                // funds to sync can be set up explicitly:
-                // await syncronizer.SyncDailyPrices(new[] { "AAPL", "MSFT" }, cancellationToken);
+            var syncronizer = serviceProvider.GetService<IPricesSyncronizer>();
+            Console.WriteLine("Sync daily prices");
+            await syncronizer.SyncDailyPrices(cancellationToken);
+            // funds to sync can be set up explicitly:
+            // await syncronizer.SyncDailyPrices(new[] { "AAPL", "MSFT" }, cancellationToken);
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                Console.WriteLine("Sync intraday prices");
-                await syncronizer.SyncIntradayPrices(cancellationToken);
-                // funds to sync can be set up explicitly:
-                // await syncronizer.SyncIntradayPrices(new[] { "AAPL", "MSFT" }, cancellationToken);
-            }
-            catch (TaskCanceledException)
+            if (cancellationToken.IsCancellationRequested)
             {
+                return;
             }
+
+            Console.WriteLine("Sync intraday prices");
+            await syncronizer.SyncIntradayPrices(cancellationToken);
+            // funds to sync can be set up explicitly:
+            // await syncronizer.SyncIntradayPrices(new[] { "AAPL", "MSFT" }, cancellationToken);
         }
 
         private static async Task Calculations(IServiceProvider serviceProvider)

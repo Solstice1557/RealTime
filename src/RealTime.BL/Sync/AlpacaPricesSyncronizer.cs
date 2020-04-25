@@ -35,68 +35,92 @@
 
         public async Task SyncIntradayPrices(string[] symbols, CancellationToken cancellationToken)
         {
-            List<FundToSync> fundsToSync;
-            using (var scope = serviceProvider.CreateScope())
+            try
             {
-                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
-                fundsToSync = await dbContext.Funds
-                    .Where(x => symbols.Contains(x.Symbol))
-                    .OrderByDescending(x => x.Volume)
-                    .Select(x => new FundToSync { Id = x.FundId, Symbol = x.Symbol })
-                    .ToListAsync(cancellationToken);
-            }
+                List<FundToSync> fundsToSync;
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
+                    fundsToSync = await dbContext.Funds
+                        .Where(x => symbols.Contains(x.Symbol))
+                        .OrderByDescending(x => x.Volume)
+                        .Select(x => new FundToSync { Id = x.FundId, Symbol = x.Symbol })
+                        .ToListAsync(cancellationToken);
+                }
 
-            await SyncIntradayPrices(fundsToSync, cancellationToken);
+                await SyncIntradayPrices(fundsToSync, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+            }
         }
 
         public async Task SyncDailyPrices(string[] symbols, CancellationToken cancellationToken)
         {
-            List<FundToSync> fundsToSync;
-            using (var scope = serviceProvider.CreateScope())
+            try
             {
-                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
-                fundsToSync = await dbContext.Funds
-                    .Where(x => symbols.Contains(x.Symbol))
-                    .OrderByDescending(x => x.Volume)
-                    .Select(x => new FundToSync { Id = x.FundId, Symbol = x.Symbol })
-                    .ToListAsync(cancellationToken);
-            }
+                List<FundToSync> fundsToSync;
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
+                    fundsToSync = await dbContext.Funds
+                        .Where(x => symbols.Contains(x.Symbol))
+                        .OrderByDescending(x => x.Volume)
+                        .Select(x => new FundToSync { Id = x.FundId, Symbol = x.Symbol })
+                        .ToListAsync(cancellationToken);
+                }
 
-            await this.SyncDailyPrices(fundsToSync, cancellationToken);
+                await this.SyncDailyPrices(fundsToSync, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+            }
         }
 
         public async Task SyncDailyPrices(CancellationToken cancellationToken)
         {
-            List<FundToSync> fundsToSync;
-            using (var scope = serviceProvider.CreateScope())
+            try
             {
-                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
-                fundsToSync = await dbContext.Funds.OrderByDescending(x => x.Volume)
-                    .Select(x => new FundToSync
-                    {
-                        Id = x.FundId,
-                        Symbol = x.Symbol,
-                        AnyDailyPrice = x.DailyPrices.Any()
-                    })
-                    .ToListAsync(cancellationToken);
-            }
+                List<FundToSync> fundsToSync;
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
+                    fundsToSync = await dbContext.Funds.OrderByDescending(x => x.Volume)
+                        .Select(x => new FundToSync
+                        {
+                            Id = x.FundId,
+                            Symbol = x.Symbol,
+                            AnyDailyPrice = x.DailyPrices.Any()
+                        })
+                        .ToListAsync(cancellationToken);
+                }
 
-            await this.SyncDailyPrices(fundsToSync, cancellationToken);
+                await this.SyncDailyPrices(fundsToSync, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+            }
         }
 
         public async Task SyncIntradayPrices(CancellationToken cancellationToken)
         {
-            List<FundToSync> fundsToSync;
-            using (var scope = serviceProvider.CreateScope())
+            try
             {
-                var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
-                fundsToSync = await dbContext.Funds.OrderByDescending(x => x.Volume)
-                    .Take(120)
-                    .Select(x => new FundToSync { Id = x.FundId, Symbol = x.Symbol })
-                    .ToListAsync(cancellationToken);
-            }
+                List<FundToSync> fundsToSync;
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetService<PricesDbContext>();
+                    fundsToSync = await dbContext.Funds.OrderByDescending(x => x.Volume)
+                        .Take(120)
+                        .Select(x => new FundToSync { Id = x.FundId, Symbol = x.Symbol })
+                        .ToListAsync(cancellationToken);
+                }
 
-            await SyncIntradayPrices(fundsToSync, cancellationToken);
+                await SyncIntradayPrices(fundsToSync, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+            }
         }
 
         public void Dispose()
