@@ -34,11 +34,14 @@
             serviceCollection.AddLogging(
                 configure =>
                 {
+                    configure.ClearProviders();
+                    configure.AddConfiguration(configuration.GetSection("Logging"));
                     configure.AddConsole();
                     configure.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
                     configure.AddFilter("Microsoft.EntityFrameworkCore.Infrastructure", LogLevel.Warning);
                 }
             );
+
             serviceCollection.Configure<AppSettings>(configuration.GetSection("AppSettings"));
             var sqlFilePath = configuration.GetValue<string>("DBDirPath");
 

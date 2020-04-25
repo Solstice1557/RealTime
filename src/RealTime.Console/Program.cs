@@ -8,10 +8,11 @@
     using RealTime.BL.Prices;
     using RealTime.BL.Sync;
     using RealTime.BL.Trading;
+    using System.Collections.Generic;
 
     public static class Program
     {
-        static async Task Main(string[] args)
+        public static void Main()
         {
             var serviceProvider = Initialization.InitServices();
             var cancellationTokenSource = new CancellationTokenSource();
@@ -20,22 +21,31 @@
             Console.WriteLine("Sync in progress, press any key to start calculation");
             Console.ReadKey();
 
-            try
-            {
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    await Calculations(scope.ServiceProvider);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+            Task tradingTask = Task.Run(
+                    async () =>
+                    {
+                        try
+                        {
+                            using (var scope = serviceProvider.CreateScope())
+                            {
+                                var pricesService = serviceProvider.GetService<IPricesService>();
+                                await Calculations(pricesService, cancellationTokenSource.Token);
+                            }
+                        }
+                        catch (TaskCanceledException)
+                        {
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Trading task error: {0}", e);
+                        }
+                    });
 
-            Console.WriteLine("End. Press any key to stop prices syncronization");
+            Console.WriteLine("Press any key to finish");
             Console.ReadKey();
             cancellationTokenSource.Cancel();
             syncTask.Wait(TimeSpan.FromSeconds(20));
+            tradingTask.Wait(TimeSpan.FromSeconds(20));
         }
 
         private static async Task Sync(
@@ -59,17 +69,14 @@
             // await syncronizer.SyncIntradayPrices(new[] { "AAPL", "MSFT" }, cancellationToken);
         }
 
-        private static async Task Calculations(IServiceProvider serviceProvider)
+        private static async Task Calculations(IPricesService pricesService, CancellationToken cancellationToken)
         {
-            var pricesService = serviceProvider.GetService<IPricesService>();
-
             const string Symbol = "AAPL";
 
             var techAnalyses = new[]
                 {
                     new TechAnalysisInfo(TechAnalysisType.SmoothedMovingAverage, 20, PriceType.Close),
                     new TechAnalysisInfo(TechAnalysisType.ExponentalMovingAverage, 20, PriceType.Close),
-                    // new TechAnalysisInfo(TechAnalysisType.ExponentalMovingAverage, 150, PriceType.Close),
                     new TechAnalysisInfo(TechAnalysisType.MovingAverage, 40, PriceType.Low)
                 };
 
@@ -80,41 +87,62 @@
                     PricesTimeInterval.Intraday15Min
                 };
 
-            var prices = await pricesService.GetPrices(
-                Symbol,
-                intervals,
-                100,
-                null,
-                null,
-                techAnalyses);
-
-            Console.WriteLine($"Prices for {Symbol}");
-            Console.WriteLine();
-
-            foreach (var price in prices)
-            {
-                foreach (var interval in intervals)
-                {
-                    Console.WriteLine(price[interval].ToDebugString(interval));
-                }
-
-                Console.WriteLine();
-            }
-
             var tradingHistory = new TradingHistory();
-            tradingHistory.Buy(prices[10][intervals[0]].Date, prices[10][intervals[0]].Close.Value, 100);
-            tradingHistory.Buy(prices[20][intervals[0]].Date, prices[20][intervals[0]].Close.Value, 50);
-            tradingHistory.Sell(prices[30][intervals[0]].Date, prices[30][intervals[0]].Close.Value, 140);
 
-            var profit = tradingHistory.GetCurrentProfit(prices.Last()[intervals[0]].Close.Value);
-            Console.WriteLine($"Current trading profit: ${profit:F02}");
+            List<Dictionary<PricesTimeInterval, PriceModel>> prices = null;
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                prices = await pricesService.GetPrices(
+                                    Symbol,
+                                    intervals,
+                                    100,
+                                    null,
+                                    null,
+                                    techAnalyses);
 
-            HtmlConverter.SavePricesHtml(
-                prices,
-                tradingHistory,
-                Symbol,
-                intervals,
-                "test.html");
+                Console.WriteLine($"Prices for {Symbol}");
+                Console.WriteLine();
+
+                foreach (var price in prices)
+                {
+                    foreach (var interval in intervals)
+                    {
+                        // Console.WriteLine(price[interval].ToDebugString(interval));
+                    }
+                }
+                
+                var lastPrice = prices.First()[intervals[0]];
+                Console.WriteLine("Last Price {0}: {1}", lastPrice.Date, lastPrice.Close.Value);
+
+                // todo your code here
+                tradingHistory.Buy(lastPrice.Date, lastPrice.Close.Value, 100);
+
+                // calculations and displaying current profit
+                var profit = tradingHistory.GetCurrentProfit(prices.First()[intervals[0]].Close.Value);
+                Console.WriteLine($"Current trading profit: ${profit:F02}");
+
+                try
+                {
+                    await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
+            }
+           
+            if (prices != null)
+            {
+                var profit = tradingHistory.GetCurrentProfit(prices.First()[intervals[0]].Close.Value);
+                Console.WriteLine($"Current trading profit: ${profit:F02}");
+
+                HtmlConverter.SavePricesHtml(
+                    prices,
+                    tradingHistory,
+                    Symbol,
+                    intervals,
+                    "test.html");
+            }
         }
     }
 }

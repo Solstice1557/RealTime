@@ -28,7 +28,7 @@
             var amchartsDataviz = File.ReadAllText(Path.Combine(baseFolder, "libs/amcharts4/dataviz.js"));
             var pricesJson = JsonConvert.SerializeObject(prices); 
 
-            var lastPrice = prices.Last().First().Value.Close.Value;
+            var lastPrice = prices.First().First().Value.Close.Value;
             var amount = tradingHistory?.GetCurrentAmount() ?? 0;
             var currentCost = (amount * lastPrice).ToString("F02");
             var profit = tradingHistory?.GetCurrentProfit(lastPrice).ToString("F02") ?? "0";
