@@ -7,7 +7,9 @@
     using Microsoft.Extensions.Options;
     using RealTime.BL;
     using RealTime.BL.Common;
+    using RealTime.BL.Trading;
     using RealTime.DAL;
+    using Serilog;
     using System;
     using System.IO;
 
@@ -23,20 +25,31 @@
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true)
-                .AddJsonFile(Path.Combine(projectPath, "realtimesettings.json"), optional: true, reloadOnChange: true)
-                .AddJsonFile(Path.Combine(projectPath, $"realtimesettings.{environmentName}.json"), optional: false, reloadOnChange: true)
-                .AddJsonFile("realtimesettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("realtimesettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"realtimesettings.{environmentName}.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables();
+                .AddJsonFile(Path.Combine(projectPath, "realtimesettings.json"), optional: true, reloadOnChange: true)
+                .AddJsonFile(Path.Combine(projectPath, $"realtimesettings.{environmentName}.json"), optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .AddUserSecrets(typeof(Initialization).Assembly);
             IConfigurationRoot configuration = builder.Build();
 
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(
                 configure =>
                 {
+                    var log = new LoggerConfiguration()
+                         .MinimumLevel.Warning()
+                         .WriteTo.File(
+                            "errors.txt",
+                            retainedFileCountLimit: 3,
+                            fileSizeLimitBytes: 1024 * 1024,
+                            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}")
+                         .CreateLogger();
+
                     configure.ClearProviders();
                     configure.AddConfiguration(configuration.GetSection("Logging"));
                     configure.AddConsole();
+                    configure.AddSerilog(log);
                     configure.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
                     configure.AddFilter("Microsoft.EntityFrameworkCore.Infrastructure", LogLevel.Warning);
                 }
@@ -52,6 +65,12 @@
                     options.UseSqlite($"Data Source={sqlFilePath};");
                 });
             serviceCollection.RegisterBusinessLogicServices();
+            serviceCollection.AddETradeServices(configuration);
+            serviceCollection.AddTdAmeritradeServices(configuration);
+            serviceCollection.AddInteractiveBrokersServices(configuration);
+            serviceCollection.AddAlpacaServices(configuration);
+            serviceCollection.AddTransient<AdditionalStocksImportService>();
+            serviceCollection.AddTransient<BrokersService>();
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
             using (var scope = serviceProvider.CreateScope())

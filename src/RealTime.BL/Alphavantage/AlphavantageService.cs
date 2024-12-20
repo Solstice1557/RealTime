@@ -11,6 +11,7 @@
     using RealTime.BL.Prices;
 
     using Microsoft.Extensions.Logging;
+    using RealTime.BL.Alphavantage.Data;
 
     public class AlphavantageService : IAlphavantageService
     {
@@ -55,6 +56,23 @@
                 await Task.Delay(RetryTimespan, cancellationToken);
                 return await LoadPricesWithRetry(symbol, pricesInterval, full, cancellationToken, retryCount);
             }
+        }
+
+        public async Task<AlphavantageFund> GetFundOverview(string symbol)
+        {
+            var client = new RestClient(BaseUrl);
+            var request = new RestRequest(Method.GET);
+            request.AddQueryParameter("function", "OVERVIEW");
+            request.AddQueryParameter("symbol", symbol.Replace(".", string.Empty));
+            request.AddQueryParameter("apikey", this.apiKey);
+
+            var data = await client.GetAndParse<AlphavantageFund>(request, CancellationToken.None);
+            if (string.IsNullOrEmpty(data.Symbol))
+            {
+                return null;
+            }
+
+            return data;
         }
 
         public async Task<Dictionary<DateTime, AlphavantagePrice>> LoadPrices(

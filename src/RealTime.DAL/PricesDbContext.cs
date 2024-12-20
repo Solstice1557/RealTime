@@ -52,20 +52,27 @@
 
         private static Fund[] GetFunds()
         {
-            var assemblyDirectory = Assembly.GetAssembly(typeof(PricesDbContext)).CodeBase;
-            if (assemblyDirectory.StartsWith(@"file:"))
+            var baseFunds = GetFundsFromFile("funds.csv");
+            var funds = baseFunds.ToArray();
+            for (var i = 0; i < funds.Length; i++)
             {
-                assemblyDirectory = assemblyDirectory.Substring(8);
+                funds[i].FundId = i + 1;
             }
 
-            var solutionDirectory =
-                 Path.GetDirectoryName(
-                 Path.GetDirectoryName(
-                Path.GetDirectoryName((Path.GetDirectoryName(Path.GetDirectoryName(assemblyDirectory))))));
+            return funds;
+        }
+
+        private static Fund[] GetFundsFromFile(string fileName)
+        {
+            if (!TryGetSolutionFolder(out var solutionDirectory))
+            {
+                return new Fund[0];
+            }
+
             var filePath = Path.Combine(
                 solutionDirectory,
                 "Data",
-                "funds.csv");
+                fileName);
 
             if (!File.Exists(filePath))
             {
@@ -82,17 +89,56 @@
                         Name = x[1].Trim(' ', '"'),
                         Volume = int.Parse(x[2])
                     })
-                .OrderByDescending(x => x.Volume)
                 .Select(
-                    (x, i) => new Fund
+                    x => new Fund
                     {
-                        FundId = i + 1,
                         Symbol = x.Symbol,
                         Name = x.Name,
                         Volume = x.Volume
                     })
                 .ToArray();
             return funds;
+        }
+
+        private static bool TryGetSolutionFolder(out string solutionFolder)
+        {
+            var assemblyDirectory = Assembly.GetAssembly(typeof(PricesDbContext)).CodeBase;
+            if (assemblyDirectory.StartsWith(@"file:"))
+            {
+                assemblyDirectory = assemblyDirectory.Substring(8);
+            }
+
+            solutionFolder = Path.GetDirectoryName(assemblyDirectory);
+            if (string.IsNullOrEmpty(solutionFolder))
+            {
+                return false;
+            }
+
+            solutionFolder = Path.GetDirectoryName(solutionFolder);
+            if (string.IsNullOrEmpty(solutionFolder))
+            {
+                return false;
+            }
+
+            solutionFolder = Path.GetDirectoryName(solutionFolder);
+            if (string.IsNullOrEmpty(solutionFolder))
+            {
+                return false;
+            }
+
+            solutionFolder = Path.GetDirectoryName(solutionFolder);
+            if (string.IsNullOrEmpty(solutionFolder))
+            {
+                return false;
+            }
+
+            solutionFolder = Path.GetDirectoryName(solutionFolder);
+            if (string.IsNullOrEmpty(solutionFolder))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

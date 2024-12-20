@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using RealTime.BL.Alphavantage.Data;
     using RealTime.BL.Prices;
 
     public interface IAlphavantageService
@@ -21,5 +21,7 @@
             PricesTimeInterval interval,
             bool full,
             CancellationToken cancellationToken);
+
+        Task<AlphavantageFund> GetFundOverview(string symbol);
     }
 }

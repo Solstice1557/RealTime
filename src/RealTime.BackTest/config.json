@@ -1,0 +1,5 @@
+{
+  "DataPath": "./",
+  "Tickers": [ "AAPL", "BA" ],
+  "MinPriceDate": "2019-12-20"
+}

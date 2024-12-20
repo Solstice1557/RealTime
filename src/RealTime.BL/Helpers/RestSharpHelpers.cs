@@ -9,13 +9,6 @@
 
     public static class RestSharpHelpers
     {
-        public static Task<IRestResponse> GetResponseContentAsync(this RestClient client, RestRequest request)
-        {
-            var tcs = new TaskCompletionSource<IRestResponse>();
-            client.ExecuteAsync(request, response => { tcs.SetResult(response); });
-            return tcs.Task;
-        }
-
         public static async Task<T> GetAndParse<T>(
             this RestClient client,
             RestRequest request,

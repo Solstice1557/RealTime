@@ -7,5 +7,7 @@
         public string AlpacaApiKey { get; set; }
 
         public string AlpacaApiSecret { get; set; }
+
+        public string AlpacaPolygonKey { get; set; }
     }
 }

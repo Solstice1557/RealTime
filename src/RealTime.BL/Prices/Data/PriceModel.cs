@@ -26,5 +26,16 @@
         public decimal? Volume { get; set; }
 
         public Dictionary<string, decimal?> TechAnalysis { get; } = new Dictionary<string, decimal?>();
+
+        public PriceModel Clone()
+            =>
+            new PriceModel
+            {
+                Date = Date,
+                Open = Open,
+                High = High,
+                Low = Low,
+                Close = Close
+            };
     }
 }

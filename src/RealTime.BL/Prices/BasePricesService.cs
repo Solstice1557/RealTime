@@ -111,13 +111,16 @@
             IEnumerable<PriceModel> prices,
             Func<PriceModel, T> groupingFunc)
         {
-            return prices.GroupBy(groupingFunc)
+            return prices
+                .GroupBy(groupingFunc)
                 .Select(
                 g => new PriceModel
                 {
                     Date = g.Min(x => x.Date),
-                    Open = g.OrderBy(x => x.Date).First(x => x.Open != null && x.Open > 0).Open,
-                    Close = g.OrderBy(x => x.Date).Last(x => x.Close != null && x.Close > 0).Close,
+                    Open = g.OrderBy(x => x.Date).FirstOrDefault(x => x.Open != null && x.Open > 0)?.Open
+                        ?? g.OrderBy(x => x.Date).First(x => x.Close != null && x.Close > 0).Close,
+                    Close = g.OrderBy(x => x.Date).LastOrDefault(x => x.Close != null && x.Close > 0)?.Close
+                            ?? g.OrderBy(x => x.Date).Last(x => x.Open != null && x.Open > 0).Open,
                     High = g.Max(x => x.High),
                     Low = g.Where(x => x.Low.HasValue && x.Low > 0).Min(x => x.Low),
                     Volume = g.First().Volume

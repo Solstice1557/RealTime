@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>33d36eb8-8e06-43fb-90b9-b6eb8ea3b700</UserSecretsId>
+  </PropertyGroup>
+ 
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.21" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.21" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.21" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.21" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.21" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.21" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.21" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RealTime.BL\RealTime.BL.csproj" />
+    <ProjectReference Include="..\RealTime.DAL\RealTime.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AdditionalSymbols.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="realtimesettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
